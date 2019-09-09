@@ -22,7 +22,7 @@ def accepts(transitions, initial, s):
     return state
 
 
-def parser():
+def parser(fileName):
     dfa = {0: {"\n": 0, " ": 0, "\t": 0, ".": 2, "=": 5, "(": 6, ")": 7,
                ";": 8, "+": 9, "-": 10, "*": 11, "/": 12, "^": 13, "\"": 14, "char": 1, "digit": 3},
            1: {"char": 1, "digit": 1},
@@ -45,8 +45,9 @@ def parser():
     state = 0
     tokens = []
     token = ''
-    accepting = {1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15}
-    for line in open('test/prog1.j', "r"):
+    # accepting = {1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15}
+    file = 'test/' + fileName
+    for line in open(file, "r"):
         for char in line:
             token += char
             state = accepts(dfa, state, char)
@@ -68,3 +69,6 @@ def parser():
     print(tokens)
     for entry in tokens:
         print(f"> {entry}")
+
+
+parser("prog1.j")
