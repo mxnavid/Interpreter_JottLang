@@ -1,51 +1,12 @@
-
 import re
-'''
-def accepts(transitions,initial,accepting,s):
-    state = initial
-    for c in s:
-        if c in transitions[state]:
-            state = transitions[state][c]
-            print(c)
-        else:
-            if len(transitions[state])>0:
-                if re.match("\d",c):
-                    state = transitions[state]["digit"]
-                    print("DIGIT")
-                elif re.match("[^\d\s:]",c):
-                    state = transitions[state]["char"]
-                    print("CHAR")
-                else:
-                    print("BREAKSTATE")
-            else:
-                print("BREAKSTATE")
 
-    return state in accepting
+class token:
+    def __init__(self):
+        self.type = ""
+        self.value = ""
+        self.line = []
 
-dfa = {0:{"\n": 0, " ":0, "\t": 0, "char":1, ".":2, "digit":3, "=":5, "(":6, ")":7,
-	  ";":8, "+":9, "-":10,"*":11, "/":12, "^":13, "\"":14},
-       1:{"char":1, "digit":1},
-       2:{"digit":4},
-	   3:{"digit":3, ".":4},
-       4:{"digit":4},
-       5:{},
-	   6:{},
-       7:{},
-       8:{},
-	   9:{},
-       10:{},
-	   11:{},
-	   12:{},
-       13:{},
-       14:{"\"":15, "char":14, "digit":14, " ":14},
-	   15:{},
-}
 
-initial = 0
-accepting = {1,3,4,5,6,7,8,9,10,11,12,13,15}
-print(accepts(dfa,initial,accepting,'varible_1 '))
-
-'''
 def accepts(transitions,initial,s):
     state = initial
     if len(transitions[state])==0:
@@ -67,8 +28,13 @@ def accepts(transitions,initial,s):
 
     return state
 
+term_tokens = {
+    1 : "id", 3 : "number", 4 : "number", 5 : "assign", 6 : "start_paren", 7 : "end_paren", 8 : "end_stmt", 9 : "plus",
+    10 : "minus", 11 : "mult", 12 : "divide", 13 : "power", 15 : "string", 16 : "comma"
+}
+
 dfa = {0:{"\n": 0, " ":0, "\t": 0, ".":2, "=":5, "(":6, ")":7,
-	  ";":8, "+":9, "-":10,"*":11, "/":12, "^":13, "\"":14,"char":1, "digit":3},
+	  ";":8, "+":9, "-":10,"*":11, "/":12, "^":13, "\"":14,",":16,"char":1, "digit":3},
        1:{"char":1, "digit":1},
        2:{"digit":4},
 	   3:{"digit":3, ".":4},
@@ -84,31 +50,61 @@ dfa = {0:{"\n": 0, " ":0, "\t": 0, ".":2, "=":5, "(":6, ")":7,
        13:{},
        14:{"\"":15, "char":14, "digit":14, " ":14},
 	   15:{},
+       16:{},
 }
 
 state = 0
 tokens = []
-token = ''
-accepting = {1,3,4,5,6,7,8,9,10,11,12,13,15}
-for line in open('test/prog1.j',"r"):
+token_i = token()
+line_num = 0
+for line in open('test/prog3.j',"r"):
+    line_num += 1
     for char in line:
-        token += char
+        if char != " " and char != "\n":
+            token_i.value += char
+        last_state = state
         state = accepts(dfa,state,char)
-        #print(token)
-        #print(state)
         if state == "break_b":
-            tokens.append(token[:-1])
-            token = char
+            if char != " " and char != "\n":
+                token_i.value = token_i.value[:-1]
+                token_i.line = [line_num,line]
+                if(last_state == 14):
+                    print(line)
+                    print("vlaa")
+                token_i.type = term_tokens[last_state]
+                tokens.append(token_i)
+                token_i = token()
+                token_i.value = char
+            else:
+                token_i.line = [line_num,line]
+                token_i.type = term_tokens[last_state]
+                tokens.append(token_i)
+                token_i = token()
+                token_i.value = ''
             state = 0
+            last_state = state
             state= accepts(dfa,state,char)
         if state == "break_a":
-            tokens.append(token)
-            token = ""
+            token_i.type = term_tokens[last_state]
+            token_i.line = [line_num,line]
+            tokens.append(token_i)
+            token_i = token()
+            token.value = ""
             state = 0
-state = accepts(dfa,state,'')
-if state == "break_b":
-    tokens.append(token)
+            last_state = state
 
-print(tokens)
+last_state = state
+state = accepts(dfa,state,'EOF')
+if state == "break_b":
+    token_i.line = [line_num,line]
+    token_i.type = term_tokens[last_state]
+    tokens.append(token_i)
+
+token_i = token()
+token_i.value = "EOF"
+token_i.line = [line_num,line]
+token_i.type = "EOF"
+tokens.append(token_i)
+#print(tokens)
 for entry in tokens:
-    print(f"> {entry}")
+    print(f"> {entry.value} - {entry.type} - {entry.line}")
