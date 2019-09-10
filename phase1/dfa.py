@@ -1,18 +1,25 @@
 import re
 
+class token:
+    def __init__(self):
+        self.type = ""
+        self.value = ""
+        self.line = []
 
-def accepts(transitions, initial, s):
+
+def accepts(transitions,initial,s):
     state = initial
-    if len(transitions[state]) == 0:
-        return "break_b"
+    if len(transitions[state])==0:
+         return "break_b"
 
     if s in transitions[state]:
         state = transitions[state][s]
+
     else:
-        if len(transitions[state]) > 0:
-            if re.match("\d", s):
+        if len(transitions[state])>0:
+            if re.match("\d",s):
                 state = transitions[state]["digit"]
-            elif re.match("[A-Za-z]", s):
+            elif re.match("[A-Za-z]",s):
                 state = transitions[state]["char"]
             else:
                 state = "break_b"
@@ -21,54 +28,87 @@ def accepts(transitions, initial, s):
 
     return state
 
+term_tokens = {
+    1 : "id", 3 : "number", 4 : "number", 5 : "assign", 6 : "start_paren", 7 : "end_paren", 8 : "end_stmt", 9 : "plus",
+    10 : "minus", 11 : "mult", 12 : "divide", 13 : "power", 15 : "string", 16 : "comma"
+}
+
+dfa = {0:{"\n": 0, " ":0, "\t": 0, ".":2, "=":5, "(":6, ")":7,
+	  ";":8, "+":9, "-":10,"*":11, "/":12, "^":13, "\"":14,",":16,"char":1, "digit":3},
+       1:{"char":1, "digit":1},
+       2:{"digit":4},
+	   3:{"digit":3, ".":4},
+       4:{"digit":4},
+       5:{},
+	   6:{},
+       7:{},
+       8:{},
+	   9:{},
+       10:{},
+	   11:{},
+	   12:{},
+       13:{},
+       14:{"\"":15, "char":14, "digit":14, " ":14},
+	   15:{},
+       16:{},
+}
 
 def parser(fileName):
-    dfa = {0: {"\n": 0, " ": 0, "\t": 0, ".": 2, "=": 5, "(": 6, ")": 7,
-               ";": 8, "+": 9, "-": 10, "*": 11, "/": 12, "^": 13, "\"": 14, "char": 1, "digit": 3},
-           1: {"char": 1, "digit": 1},
-           2: {"digit": 4},
-           3: {"digit": 3, ".": 4},
-           4: {"digit": 4},
-           5: {},
-           6: {},
-           7: {},
-           8: {},
-           9: {},
-           10: {},
-           11: {},
-           12: {},
-           13: {},
-           14: {"\"": 15, "char": 14, "digit": 14, " ": 14},
-           15: {},
-           }
 
     state = 0
     tokens = []
-    token = ''
-    # accepting = {1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15}
-    file = 'test/' + fileName
-    for line in open(file, "r"):
+    token_i = token()
+    line_num = 0
+    for line in open(fileName,"r"):
+        line_num += 1
         for char in line:
-            token += char
-            state = accepts(dfa, state, char)
-            # print(token)
-            # print(state)
+            if char != " " and char != "\n":
+                token_i.value += char
+            last_state = state
+            state = accepts(dfa,state,char)
             if state == "break_b":
-                tokens.append(token[:-1])
-                token = char
+                if char != " " and char != "\n":
+                    token_i.value = token_i.value[:-1]
+                    token_i.line = [line_num,line]
+                    if(last_state == 14):
+                        print(line)
+                        print("vlaa")
+                    token_i.type = term_tokens[last_state]
+                    tokens.append(token_i)
+                    token_i = token()
+                    token_i.value = char
+                else:
+                    token_i.line = [line_num,line]
+                    token_i.type = term_tokens[last_state]
+                    tokens.append(token_i)
+                    token_i = token()
+                    token_i.value = ''
                 state = 0
-                state = accepts(dfa, state, char)
+                last_state = state
+                state= accepts(dfa,state,char)
             if state == "break_a":
-                tokens.append(token)
-                token = ""
+                token_i.type = term_tokens[last_state]
+                token_i.line = [line_num,line]
+                tokens.append(token_i)
+                token_i = token()
+                token.value = ""
                 state = 0
-    state = accepts(dfa, state, '')
+                last_state = state
+
+    last_state = state
+    state = accepts(dfa,state,'EOF')
     if state == "break_b":
-        tokens.append(token)
+        token_i.line = [line_num,line]
+        token_i.type = term_tokens[last_state]
+        tokens.append(token_i)
 
-    print(tokens)
+    token_i = token()
+    token_i.value = "EOF"
+    token_i.line = [line_num,line]
+    token_i.type = "EOF"
+    tokens.append(token_i)
+    #print(tokens)
     for entry in tokens:
-        print(f"> {entry}")
+        print(f"> {entry.value} - {entry.type} - {entry.line}")
 
-
-parser("prog1.j")
+parser('test/prog1.j')
