@@ -53,58 +53,62 @@ dfa = {0:{"\n": 0, " ":0, "\t": 0, ".":2, "=":5, "(":6, ")":7,
        16:{},
 }
 
-state = 0
-tokens = []
-token_i = token()
-line_num = 0
-for line in open('test/prog3.j',"r"):
-    line_num += 1
-    for char in line:
-        if char != " " and char != "\n":
-            token_i.value += char
-        last_state = state
-        state = accepts(dfa,state,char)
-        if state == "break_b":
+def parser(fileName):
+
+    state = 0
+    tokens = []
+    token_i = token()
+    line_num = 0
+    for line in open(fileName,"r"):
+        line_num += 1
+        for char in line:
             if char != " " and char != "\n":
-                token_i.value = token_i.value[:-1]
-                token_i.line = [line_num,line]
-                if(last_state == 14):
-                    print(line)
-                    print("vlaa")
+                token_i.value += char
+            last_state = state
+            state = accepts(dfa,state,char)
+            if state == "break_b":
+                if char != " " and char != "\n":
+                    token_i.value = token_i.value[:-1]
+                    token_i.line = [line_num,line]
+                    if(last_state == 14):
+                        print(line)
+                        print("vlaa")
+                    token_i.type = term_tokens[last_state]
+                    tokens.append(token_i)
+                    token_i = token()
+                    token_i.value = char
+                else:
+                    token_i.line = [line_num,line]
+                    token_i.type = term_tokens[last_state]
+                    tokens.append(token_i)
+                    token_i = token()
+                    token_i.value = ''
+                state = 0
+                last_state = state
+                state= accepts(dfa,state,char)
+            if state == "break_a":
                 token_i.type = term_tokens[last_state]
+                token_i.line = [line_num,line]
                 tokens.append(token_i)
                 token_i = token()
-                token_i.value = char
-            else:
-                token_i.line = [line_num,line]
-                token_i.type = term_tokens[last_state]
-                tokens.append(token_i)
-                token_i = token()
-                token_i.value = ''
-            state = 0
-            last_state = state
-            state= accepts(dfa,state,char)
-        if state == "break_a":
-            token_i.type = term_tokens[last_state]
-            token_i.line = [line_num,line]
-            tokens.append(token_i)
-            token_i = token()
-            token.value = ""
-            state = 0
-            last_state = state
+                token.value = ""
+                state = 0
+                last_state = state
 
-last_state = state
-state = accepts(dfa,state,'EOF')
-if state == "break_b":
+    last_state = state
+    state = accepts(dfa,state,'EOF')
+    if state == "break_b":
+        token_i.line = [line_num,line]
+        token_i.type = term_tokens[last_state]
+        tokens.append(token_i)
+
+    token_i = token()
+    token_i.value = "EOF"
     token_i.line = [line_num,line]
-    token_i.type = term_tokens[last_state]
+    token_i.type = "EOF"
     tokens.append(token_i)
+    #print(tokens)
+    for entry in tokens:
+        print(f"> {entry.value} - {entry.type} - {entry.line}")
 
-token_i = token()
-token_i.value = "EOF"
-token_i.line = [line_num,line]
-token_i.type = "EOF"
-tokens.append(token_i)
-#print(tokens)
-for entry in tokens:
-    print(f"> {entry.value} - {entry.type} - {entry.line}")
+parser('test/prog1.j')
