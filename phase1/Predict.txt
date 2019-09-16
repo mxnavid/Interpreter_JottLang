@@ -1,0 +1,19 @@
+String          {),;,[,]}
+Number          {+,-,*,/,^,),;,}
+;               {Integer,Double,String,$$,Print,Concat, CharAt}
+Integer         {ID}
+Double          {ID}
+String          {ID}
+)               {+,-,*,/,^,),[,],;}
+ID              {+,-,*,/,^,=,),[,],;}
+Print           {(}
+Concat          {(}
+CharAt          {(}
+=               {(,ID,number, Concat, CharAt}
+(               {(,ID,number,String,Concat,CharAt}
+^               {(,ID,number}
+/               {(,ID,number}
+*               {(,ID,number}
+-               {(,ID,number}
++               {(,ID,number}
+$$              {E}
