@@ -1,7 +1,7 @@
 **NOTE: shorthand "char" == [a-zA-Z], "digit" == [0-9],
 	lower == [a-z], upper == [A-Z]
 
-<program> {print,concat,charat,id,$$,ϵ}
+<program> {print,concat,charat,id,$$}
 <stmt_list> {print,concat,charat,id,$$,ϵ}
 <start_paren> {(}
 <end_paren> {)}
