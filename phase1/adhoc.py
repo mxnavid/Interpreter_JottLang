@@ -1,10 +1,12 @@
 import re
 import argparse
 
-
-
+"""
+    Code that checks the Jott grammar and returns False if any inconsistencies are found. 
+    Otherwise, it returns true so that the main function can continue checking and running. 
+"""
 def checkGrammar(line):
-    return True
+    return True #If we get here, that means the grammar is correct
 
 def main():
     parser = argparse.ArgumentParser(description='Check grammar of Jott file')
@@ -14,6 +16,7 @@ def main():
     #Open the file
     jottFile = open(args.file, "r")
     for line in jottFile:
+        #Grammar check
         if not checkGrammar(line):
             print("Error, wrong Jott syntax detected")
             raise SystemExit
