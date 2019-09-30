@@ -169,7 +169,7 @@ class d_expr:
 class d_expr_single(d_expr):
     def __init__(self):
         super().__init__(self)
-        self.child = [dbl(),int()]
+        self.child = [id(),dbl()]
 
 class d_expr_triple(d_expr):
     def __init__(self):
