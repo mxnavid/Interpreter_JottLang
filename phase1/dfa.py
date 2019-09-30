@@ -1,3 +1,4 @@
+
 import re
 
 
@@ -38,13 +39,13 @@ follows = {
     "print":{"("},
     "concat":{"("},
     "charAt":{"("},
-    "=":{"(","ID","Number", "concat", "charAt"},
-    "(":{"(","ID","Number","str","concat","charAt"},
-    "^":{"(","ID","Number"},
-    "/":{"(","ID","Number"},
-    "*":{"(","ID","Number"},
-    "-":{"(","ID","Number"},
-    "+":{"(","ID","Number"},
+    "=":{"(","ID","Number", "concat", "charAt","-"},
+    "(":{"(","ID","Number","Str","concat","charAt","-"},
+    "^":{"(","ID","Number","-"},
+    "/":{"(","ID","Number","-"},
+    "*":{"(","ID","Number","-"},
+    "-":{"(","ID","Number","-"},
+    "+":{"(","ID","Number","-"},
     "$$":{'E'}
 }
 
@@ -53,6 +54,42 @@ class token:
         self.type = ""
         self.value = ""
         self.line = []
+
+class program:
+    def __init__(self):
+        self.node = "program"
+        self.left = stmt_list()
+        self.right = "$$"
+
+class stmt_list:
+    def __init__(self):
+        self.node = "stmt_list"
+        self.left = None
+        self.right = None
+
+class stmt:
+    def __init__(self):
+        self.node = "stmt"
+        self.left = None
+        self.right = None
+
+def build_tree(tokens,tree):
+    if not tree:
+        tree = program()
+        tree.left = stmt_list()
+        build_tree(tokens,tree.left)
+        tree.right = "$$"
+        print(program)
+    if tree.node == "stmt_list":
+        if tokens[0].type != "$$":
+            tree.left = stmt()
+            build_tree(token,tree.left)
+            tree.right = stmt_list()
+            #build_tree(token,tree.right)
+        else:
+            tree.node = "EMPTY"
+
+
 
 
 def accepts(transitions,initial,s):
@@ -82,6 +119,7 @@ def parser(fileName):
     tokens = []
     token_i = token()
     line_num = 0
+    line = ""
     for line in open(fileName,"r"):
         line_num += 1
         for char in line:
@@ -161,6 +199,9 @@ def token_check(tokens):
         past_token = token.type
     return 1
 
-tokens = parser('test/prog3.j')
+tokens = parser('test/prog_easy.j')
 if(token_check(tokens)):
     print("GOOD LANGUAGE")
+    for thing in tokens:
+        print(thing.type)
+    build_tree(tokens,None)
