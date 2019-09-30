@@ -1,0 +1,61 @@
+program-> stmt_list $$      {print,concat,charat,id,$$}
+stmt_list->stmt stmt_list   {print,concat,charat,id,$$}
+stmt_list->                 {ϵ}                     ##work
+start_paren-> (             {(}
+end_paren-> )               {)}
+end_stmt-> ;                {;}
+
+char-> <l_char>             {lower}        #Question to Prof as its already in DFA
+char-> <u_char>             {uppper}       #Question ^^ 
+char-> <digit>              {digit}        #Question ^^
+
+stmt-> <print>              {print}
+stmt-> <asmt>               {Double,Integer,String}
+stmt-> <expr>               {lower,+,-,.,"}
+stmt-> <end_stmt>           {;}
+
+expr-> <i_expr>             {lower,+,-,digit} 
+expr-> <d_expr>             {lower,+,-,digit,.}
+expr-> <s_expr>             {",lower,concat,charat}
+expr-> <id>                 {lower}
+
+print->                     {print}
+asmt->                      {Double,Integer,String}
+
+op->                        {+,*,/,-,^}   
+dbl->                       {-,+,.,digit}
+d_expr->                    {lower,+,-,digit,.}
+
+int-> <sign>                {+,-,ϵ}
+int-> <digit>               {digit}}
+
+i_expr-> <id>               {lower}
+i_expr-> <dbl>              {-,+,.,digit}
+i_expr-> <dbl> <op> <dbl>   {-,+,.,digit} {+,*,/,-,^} {-,+,.,digit}
+i_expr-> <dbl> <op> <d_expr>        {-,+,.,digit} {+,*,/,-,^} {lower,+,-,digit,.}
+i_expr-> <d_expr> <op> <dbl>        {-,+,.,digit} {+,*,/,-,^} {-,+,.,digit}
+i_expr-> <d_expr> <op> <d_expr>     {-,+,.,digit} {+,*,/,-,^} {lower,+,-,digit,.}    
+
+
+int-> <sign>                    {+,-,ϵ}
+int-> <digit>                   {digit}
+int-> <digit>     # look for the sign, need to ask
+
+<i_expr>-> <id>                         {lower}
+<i_expr>-> <int>                        {-,+,0,digit}
+<i_expr>-> <int> <op> <int>             {-,+,0,digit} {+,*,/,-,^} {-,+,0,digit}
+<i_expr>-> <int> <op> <i_expr>          {-,+,0,digit} {+,*,/,-,^} {lower,+,-,digit}
+<i_expr>-> <i_expr> <op> <int>          {lower,+,-,digit} {+,*,/,-,^} {-,+,0,digit}
+<int_expr>-> <i_expr> <op> <i_expr>     {lower,+,-,digit} {+,*,/,-,^} {lower,+,-,digit}
+
+<str_literal>-> "<str>"                 {space,char,ϵ}
+
+<str> -> <char> <str>                  {char,digit} {space,char,ϵ}
+<str> -> <space> <str>                 #need work for space
+<str> ->                                {ϵ} 
+
+
+<s_expr>-><str_literal>                 {"}
+<s_expr>-><id>                          {lower}
+<s_expr>->concat<start_paren><s_expr>,<s_expr> <end_paren>       #work
+<s_expr>->charAt<start_paren> <s_expr>, <i_expr> <end_paren>     #work
