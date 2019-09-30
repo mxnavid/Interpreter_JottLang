@@ -73,6 +73,147 @@ class stmt:
         self.left = None
         self.right = None
 
+class end_stmt:
+    def __init__(self):
+        self.node = "end_stmt"
+
+class start_paren:
+    def __init__(self):
+        self.node = "start_paren"
+        self.child = "("
+
+class end_paren:
+    def __init__(self):
+        self.node = "end_paren"
+        self.child = ")"
+
+class char:
+    def __init__(self):
+        self.node = "char"
+        # should be validated by parser beforehand
+
+class l_char:
+    def __init__(self):
+        self.node = "l_char"
+        # should be validated by parser beforehand
+
+class r_char:
+    def __init__(self):
+        self.node = "r_char"
+        # should be validated by parser beforehand
+
+class digit:
+    def __init__(self):
+        self.node = "digit"
+        # should be validated by parser beforehand
+
+class space:
+    def __init__(self):
+        self.node = "space"
+        # should be validated by parser beforehand
+
+class sign:
+    def __init__(self):
+        self.node = "sign"
+        self.child = ["-","+",None]
+
+class id:
+    def __init__(self):
+        self.node = "id"
+        self.left = l_char()
+        self.right = [str(),None]
+
+class print:
+    def __init__(self):
+        self.node = "print"
+        self.print = "print"
+        self.start = start_paren()
+        self.expr = expr()
+        self.stop = end_paren()
+        self.end = end_stmt()
+
+class asmt:
+    def __init__(self):
+        self.node = "asmt"
+        self.type = ["Double","Integer","String"]
+        self.id = id()
+        self.equals = "="
+        self.expression = [d_expr(),i_expr(),s_expr()]
+        self.end = end_stmt()
+
+class expr:
+    def __init__(self):
+        self.node = "expr"
+        self.expr = [i_expr(),d_expr(),s_expr(),id()]
+
+class i_expr:
+    def __init__(self):
+        self.node = "i_expr"
+
+class i_expr_single(i_expr):
+    def __init__(self):
+        super().__init__(self)
+        self.child = [id(),int()]
+
+class i_expr_triple(i_expr):
+    def __init__(self):
+        super().__init__(self)
+        self.left = [int(),i_expr()]
+        self.op = [op()]
+        self.right = [int(),i_expr()]
+
+class d_expr:
+    def __init__(self):
+        self.node = "d_expr"
+
+class d_expr_single(d_expr):
+    def __init__(self):
+        super().__init__(self)
+        self.child = [dbl(),int()]
+
+class d_expr_triple(d_expr):
+    def __init__(self):
+        super().__init__(self)
+        self.left = [dbl(),d_expr()]
+        self.op = [op()]
+        self.right = [dbl(),d_expr()]
+
+class s_expr:
+    def __init__(self):
+        self.node = "s_expr"
+
+class op:
+    def __init__(self):
+        self.node = "op"
+        self.op = ["+","-","*","/","^"]
+
+class dbl:
+    #WIP
+    def __init__(self):
+        self.node = "dbl"
+        self.sign = sign()
+        self.left = [digit(),None]
+        self.point = "."
+        self.right [digit()]
+
+class int:
+    #WIP
+    def __init__(self):
+        self.node = "int"
+        self.sign = sign()
+        self.int = digit()
+
+class str:
+    #WIP
+    def __init__(self):
+        self.node = "str"
+        self.str = [char(),space(),str(),None]
+
+class str_literal:
+    #WIP
+    def __init__(self):
+        self.node = "str_literal"
+
 def build_tree(tokens,tree):
     if not tree:
         tree = program()
