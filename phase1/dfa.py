@@ -49,183 +49,183 @@ follows = {
     "$$":{'E'}
 }
 
-class token:
+class Token:
     def __init__(self):
         self.type = ""
         self.value = ""
         self.line = []
 
-class program:
+class Program:
     def __init__(self):
         self.node = "program"
-        self.left = stmt_list()
+        self.left = Stmt_list()
         self.right = "$$"
 
-class stmt_list:
+class Stmt_list:
     def __init__(self):
         self.node = "stmt_list"
         self.left = None
         self.right = None
 
-class stmt:
+class Stmt:
     def __init__(self):
         self.node = "stmt"
         self.left = None
         self.right = None
 
-class end_stmt:
+class End_stmt:
     def __init__(self):
         self.node = "end_stmt"
 
-class start_paren:
+class Start_paren:
     def __init__(self):
         self.node = "start_paren"
         self.child = "("
 
-class end_paren:
+class End_paren:
     def __init__(self):
         self.node = "end_paren"
         self.child = ")"
 
-class char:
+class Char:
     def __init__(self):
         self.node = "char"
         # should be validated by parser beforehand
 
-class l_char:
+class L_char:
     def __init__(self):
         self.node = "l_char"
         # should be validated by parser beforehand
 
-class r_char:
+class R_char:
     def __init__(self):
         self.node = "r_char"
         # should be validated by parser beforehand
 
-class digit:
+class Digit:
     def __init__(self):
         self.node = "digit"
         # should be validated by parser beforehand
 
-class space:
+class Space:
     def __init__(self):
         self.node = "space"
         # should be validated by parser beforehand
 
-class sign:
+class Sign:
     def __init__(self):
         self.node = "sign"
         self.child = ["-","+",None]
 
-class id:
+class Id:
     def __init__(self):
         self.node = "id"
-        self.left = l_char()
+        self.left = L_char()
         self.right = [str(),None]
 
-class print:
+class Print:
     def __init__(self):
         self.node = "print"
         self.print = "print"
-        self.start = start_paren()
-        self.expr = expr()
-        self.stop = end_paren()
-        self.end = end_stmt()
+        self.start = Start_paren()
+        self.expr = Expr()
+        self.stop = End_paren()
+        self.end = End_stmt()
 
-class asmt:
+class Asmt:
     def __init__(self):
         self.node = "asmt"
         self.type = ["Double","Integer","String"]
         self.id = id()
         self.equals = "="
-        self.expression = [d_expr(),i_expr(),s_expr()]
-        self.end = end_stmt()
+        self.expression = [D_expr(), I_expr(), S_expr()]
+        self.end = End_stmt()
 
-class expr:
+class Expr:
     def __init__(self):
         self.node = "expr"
-        self.expr = [i_expr(),d_expr(),s_expr(),id()]
+        self.expr = [I_expr(), D_expr(), S_expr(),id()]
 
-class i_expr:
+class I_expr:
     def __init__(self):
         self.node = "i_expr"
 
-class i_expr_single(i_expr):
+class I_expr_single(I_expr):
     def __init__(self):
         super().__init__(self)
         self.child = [id(),int()]
 
-class i_expr_triple(i_expr):
+class I_expr_triple(I_expr):
     def __init__(self):
         super().__init__(self)
-        self.left = [int(),i_expr()]
-        self.op = [op()]
-        self.right = [int(),i_expr()]
+        self.left = [int(), I_expr()]
+        self.op = [Op()]
+        self.right = [int(), I_expr()]
 
-class d_expr:
+class D_expr:
     def __init__(self):
         self.node = "d_expr"
 
-class d_expr_single(d_expr):
+class D_expr_single(D_expr):
     def __init__(self):
         super().__init__(self)
-        self.child = [id(),dbl()]
+        self.child = [id(), Dbl()]
 
-class d_expr_triple(d_expr):
+class D_expr_triple(D_expr):
     def __init__(self):
         super().__init__(self)
-        self.left = [dbl(),d_expr()]
-        self.op = [op()]
-        self.right = [dbl(),d_expr()]
+        self.left = [Dbl(), D_expr()]
+        self.op = [Op()]
+        self.right = [Dbl(), D_expr()]
 
-class s_expr:
+class S_expr:
     def __init__(self):
         self.node = "s_expr"
 
-class op:
+class Op:
     def __init__(self):
         self.node = "op"
         self.op = ["+","-","*","/","^"]
 
-class dbl:
+class Dbl:
     #WIP
     def __init__(self):
         self.node = "dbl"
-        self.sign = sign()
-        self.left = [digit(),None]
+        self.sign = Sign()
+        self.left = [Digit(),None]
         self.point = "."
-        self.right [digit()]
+        # self.right [Digit()]
 
-class int:
+class Int:
     #WIP
     def __init__(self):
         self.node = "int"
-        self.sign = sign()
-        self.int = digit()
+        self.sign = Sign()
+        self.int = Digit()
 
-class str:
+class Str:
     #WIP
     def __init__(self):
         self.node = "str"
-        self.str = [char(),space(),str(),None]
+        self.str = [Char(), Space(), str(), None]
 
-class str_literal:
+class Str_literal:
     #WIP
     def __init__(self):
         self.node = "str_literal"
 
 def build_tree(tokens,tree):
     if not tree:
-        tree = program()
-        tree.left = stmt_list()
+        tree = Program()
+        tree.left = Stmt_list()
         build_tree(tokens,tree.left)
         tree.right = "$$"
-        print(program)
+        print(Program)
     if tree.node == "stmt_list":
         if tokens[0].type != "$$":
-            tree.left = stmt()
-            build_tree(token,tree.left)
-            tree.right = stmt_list()
+            tree.left = Stmt()
+            build_tree(Token,tree.left)
+            tree.right = Stmt_list()
             #build_tree(token,tree.right)
         else:
             tree.node = "EMPTY"
@@ -258,7 +258,7 @@ def parser(fileName):
 
     state = 0
     tokens = []
-    token_i = token()
+    token_i = Token()
     line_num = 0
     line = ""
     for line in open(fileName,"r"):
@@ -281,7 +281,7 @@ def parser(fileName):
                     else:
                         token_i.type = term_tokens[last_state]
                     tokens.append(token_i)
-                    token_i = token()
+                    token_i = Token()
                     token_i.value = char
                 else:
                     token_i.line = [line_num,line]
@@ -291,7 +291,7 @@ def parser(fileName):
                     else:
                         token_i.type = term_tokens[last_state]
                     tokens.append(token_i)
-                    token_i = token()
+                    token_i = Token()
                     token_i.value = ''
                 state = 0
                 last_state = state
@@ -304,8 +304,8 @@ def parser(fileName):
                     token_i.type = term_tokens[last_state]
                 token_i.line = [line_num,line]
                 tokens.append(token_i)
-                token_i = token()
-                token.value = ""
+                token_i = Token()
+                Token.value = ""
                 state = 0
                 last_state = state
 
@@ -319,7 +319,7 @@ def parser(fileName):
             token_i.type = term_tokens[last_state]
         tokens.append(token_i)
 
-    token_i = token()
+    token_i = Token()
     token_i.value = "$$"
     token_i.line = [line_num,line]
     token_i.type = "$$"
