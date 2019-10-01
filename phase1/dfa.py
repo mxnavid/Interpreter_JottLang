@@ -1,4 +1,3 @@
-
 import re
 
 
@@ -132,6 +131,20 @@ class Print:
         self.stop = End_paren()
         self.end = End_stmt()
 
+
+class Concat:
+    def __init__(self):
+        self.node = "concat"
+        self.concat = "concat"
+        self.start = Start_paren()
+        self.expr = Expr()
+        self.stop = End_paren()
+        self.end = End_stmt()
+
+    
+
+
+
 class Asmt:
     def __init__(self):
         self.node = "asmt"
@@ -213,6 +226,8 @@ class Str_literal:
     #WIP
     def __init__(self):
         self.node = "str_literal"
+
+
 
 def build_tree(tokens,tree):
     if not tree:
