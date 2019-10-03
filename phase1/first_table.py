@@ -49,7 +49,7 @@ follows = {
     "$$":{'E'}
 }
 
-class token:
+class Token:
     def __init__(self):
         self.type = ""
         self.value = ""
@@ -306,7 +306,7 @@ def parser(fileName):
 
     state = 0
     tokens = []
-    token_i = token()
+    token_i = Token()
     line_num = 0
     line = ""
     for line in open(fileName,"r"):
@@ -329,7 +329,7 @@ def parser(fileName):
                     else:
                         token_i.type = term_tokens[last_state]
                     tokens.append(token_i)
-                    token_i = token()
+                    token_i = Token()
                     token_i.value = char
                 else:
                     token_i.line = [line_num,line]
@@ -339,7 +339,7 @@ def parser(fileName):
                     else:
                         token_i.type = term_tokens[last_state]
                     tokens.append(token_i)
-                    token_i = token()
+                    token_i = Token()
                     token_i.value = ''
                 state = 0
                 last_state = state
@@ -352,7 +352,7 @@ def parser(fileName):
                     token_i.type = term_tokens[last_state]
                 token_i.line = [line_num,line]
                 tokens.append(token_i)
-                token_i = token()
+                token_i = Token()
                 token.value = ""
                 state = 0
                 last_state = state
@@ -367,7 +367,7 @@ def parser(fileName):
             token_i.type = term_tokens[last_state]
         tokens.append(token_i)
 
-    token_i = token()
+    token_i = Token()
     token_i.value = "$$"
     token_i.line = [line_num,line]
     token_i.type = "$$"
@@ -388,6 +388,7 @@ def token_check(tokens):
         past_token = token.type
     return 1
 
+''' MOVED TO JOTT.PY
 tokens = parser('test/prog_easy.j')
 
 if(token_check(tokens)):
@@ -395,4 +396,4 @@ if(token_check(tokens)):
     for thing in tokens:
         print(thing.type)
     tokens = build_tree(tokens,None)
-
+'''
