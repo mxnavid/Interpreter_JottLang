@@ -37,7 +37,7 @@ follows = {
     "print":{"("},
     "concat":{"("},
     "charAt":{"("},
-    "=":{"(","ID","Number", "concat", "charAt","-"},
+    "=":{"(","ID","Number", "concat", "charAt","-","Str"},
     "(":{"(","ID","Number","Str","concat","charAt","-"},
     "^":{"(","ID","Number","-"},
     "/":{"(","ID","Number","-"},
