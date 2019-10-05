@@ -9,7 +9,7 @@ def build_tree(tokens, tree):
     if not tree:
         tree = tc.Program()
         tree.left = tc.Stmt_list()
-        tokens = build_tree(tokens,tree.left)
+        tokens = build_tree(tokens, tree.left)
         print("End of build")
     elif tree.node == "stmt_list":
         if tokens[0].type != "$$":
@@ -35,11 +35,10 @@ def build_tree(tokens, tree):
         tokens = build_tree(tokens, tree.child.end)
         return tokens
 
+
     elif tree.node == "stmt" and tokens[0].type == "concat":
-        print("I am concat")
         tree.left = tc.Expr()
         tokens = build_tree(tokens,tree.left)
-
         tree.right = tc.End_stmt()
         tokens = build_tree(tokens, tree.right)
         return tokens
@@ -49,7 +48,7 @@ def build_tree(tokens, tree):
         tree.child = tc.Asmt()
         tree.child.type = tokens[0].type
         tokens = tokens[1:]
-        tokens = build_tree(tokens,tree.child.id)
+        tokens = build_tree(tokens, tree.child.id)
         if(tokens[0].type == "="):
             tokens = tokens[1:]
             if tree.child.type == "String":
@@ -60,6 +59,13 @@ def build_tree(tokens, tree):
                 tree.child.expt = tc.D_expr_single()
             tokens = build_tree(tokens, tree.child.expr)
             tokens = build_tree(tokens, tree.child.end)
+        return tokens
+
+
+    elif tree.node == "s_expr" and tokens[0].type == "ID":
+        tree.child = tc.Id()
+        tree.child.child = tokens[0].value
+        tokens = tokens[1:]
         return tokens
 
     elif tree.node == "id" and tokens[0].type == "ID":
@@ -147,6 +153,7 @@ def accepts(transitions,initial,s):
 
     return state
 
+
 def parser(fileName):
     state = 0
     tokens = []
@@ -196,7 +203,7 @@ def parser(fileName):
                 token_i.line = [line_num,line]
                 tokens.append(token_i)
                 token_i = tc.Token()
-                token.value = ""
+                # token.value = ""
                 state = 0
                 last_state = state
 
@@ -216,6 +223,7 @@ def parser(fileName):
     token_i.type = "$$"
     tokens.append(token_i)
     return tokens
+
 
 def token_check(tokens):
     past_token = None
