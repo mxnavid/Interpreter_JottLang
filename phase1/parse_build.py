@@ -4,7 +4,8 @@ import re
 from constants import dfa, term_tokens, follows
 import token_classes as tc
 
-def build_tree(tokens,tree):
+
+def build_tree(tokens, tree):
     if not tree:
         tree = tc.Program()
         tree.left = tc.Stmt_list()
@@ -12,21 +13,37 @@ def build_tree(tokens,tree):
         print("End of build")
     elif tree.node == "stmt_list":
         if tokens[0].type != "$$":
-            tree.left = tc.Stmt_single()
-            tokens = build_tree(tokens,tree.left)
-            tree.right = tc.Stmt_list()
-            tokens = build_tree(tokens,tree.right)
+            if(tokens[0].type == 'concat'):
+                tree.left = tc.Stmt()
+                tokens = build_tree(tokens, tree.left)
+                tree.right = tc.Stmt_list()
+                tokens = build_tree(tokens, tree.right)
+            else:
+                tree.left = tc.Stmt_single()
+                tokens = build_tree(tokens, tree.left)
+                tree.right = tc.Stmt_list()
+                tokens = build_tree(tokens, tree.right)
         else:
             print("EOF")
             return tokens[1:]
     elif tree.node == "stmt" and tokens[0].type == "print":
         tree.child = tc.Print()
         tokens = tokens[1:]
-        tokens = build_tree(tokens,tree.child.start)
+        tokens = build_tree(tokens, tree.child.start)
         tokens = build_tree(tokens, tree.child.expr)
         tokens = build_tree(tokens, tree.child.stop)
         tokens = build_tree(tokens, tree.child.end)
         return tokens
+
+    elif tree.node == "stmt" and tokens[0].type == "concat":
+        print("I am concat")
+        tree.left = tc.Expr()
+        tokens = build_tree(tokens,tree.left)
+
+        tree.right = tc.End_stmt()
+        tokens = build_tree(tokens, tree.right)
+        return tokens
+
 
     elif tree.node == "stmt" and (tokens[0].type == "Integer" or tokens[0].type == "Double" or tokens[0].type == "String"):
         tree.child = tc.Asmt()
@@ -54,12 +71,35 @@ def build_tree(tokens,tree):
 
     elif tree.node == "expr" and tokens[0].type == "Str":
         tree.expr = tc.S_expr()
-        tokens = build_tree(tokens,tree.expr)
+        tokens = build_tree(tokens, tree.expr)
 
+    elif tree.node == "expr" and tokens[0].type == 'concat':
+        tree.expr = tc.S_Expr_Concat()
+        tokens = tokens[1:]
+        tokens = build_tree(tokens, tree.expr.start)
+        tokens = build_tree(tokens, tree.expr.expr1)
+        tokens = tokens[1:]
+        tokens = build_tree(tokens, tree.expr.expr2)
+        tokens = build_tree(tokens, tree.expr.stop)
+        tokens = build_tree(tokens, tree.expr.end)
+        return tokens
+
+    elif tree.node == "s_expr" and tokens[0].type == 'concat':
+        tree.expr = tc.S_Expr_Concat()
+        tokens = tokens[1:]
+        tokens = build_tree(tokens, tree.expr.start)
+        tokens = build_tree(tokens, tree.expr.expr1)
+        tokens = tokens[1:]
+        tokens = build_tree(tokens, tree.expr.expr2)
+        tokens = build_tree(tokens, tree.expr.stop)
+        tokens = build_tree(tokens, tree.expr.end)
+        return tokens
     elif tree.node == "s_expr" and tokens[0].type == "Str":
         tree.child = tc.Str_literal()
         tree.child.child = tokens[0].value
         return tokens[1:]
+
+
     elif tree.node == "expr" and tokens[0].type == "ID":
         tree.expr = tc.Id()
         tree.expr.child = tokens[0].value

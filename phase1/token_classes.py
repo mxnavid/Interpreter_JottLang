@@ -89,14 +89,19 @@ class Print:
         self.stop = End_paren()
         self.end = End_stmt()
 
-class Concat:
+class S_Expr_Concat:
     def __init__(self):
-        self.node = "concat"
+        self.node = "s_expr"
         self.concat = "concat"
         self.start = Start_paren()
-        self.expr = Expr()
+        self.expr1 = S_expr()
+        self.expr2 = S_expr()
+        self.comma = ","
         self.stop = End_paren()
         self.end = End_stmt()
+
+
+
 
 class Asmt:
     def __init__(self):
