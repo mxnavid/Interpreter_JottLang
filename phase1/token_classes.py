@@ -128,10 +128,10 @@ class I_expr_single(I_expr):
 
 class I_expr_triple(I_expr):
     def __init__(self):
-        super().__init__(self)
-        self.left = [int(), I_expr()]
-        self.op = [Op()]
-        self.right = [int(), I_expr()]
+        super().__init__()
+        self.left = None
+        self.op = None
+        self.right = None
 
 class D_expr:
     def __init__(self):
@@ -139,15 +139,15 @@ class D_expr:
 
 class D_expr_single(D_expr):
     def __init__(self):
-        super().__init__(self)
+        super().__init__()
         self.child = None
 
 class D_expr_triple(D_expr):
     def __init__(self):
-        super().__init__(self)
-        self.left = [Dbl(), D_expr()]
-        self.op = [Op()]
-        self.right = [Dbl(), D_expr()]
+        super().__init__()
+        self.left = None
+        self.op = None
+        self.right = None
 
 class S_expr:
     def __init__(self):
@@ -157,16 +157,14 @@ class S_expr:
 class Op:
     def __init__(self):
         self.node = "op"
-        self.op = ["+","-","*","/","^"]
+        self.op = None
 
 class Dbl:
     #WIP
     def __init__(self):
         self.node = "dbl"
         self.sign = Sign()
-        self.left = [Digit(),None]
-        self.point = "."
-        # self.right [Digit()]
+        self.dbl = None
 
 class Int:
     #WIP
