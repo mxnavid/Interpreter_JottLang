@@ -4,51 +4,35 @@ import re
 from constants import dfa, term_tokens, follows
 import token_classes as tc
 
-
-def build_tree(tokens, tree):
+def build_tree(tokens,tree):
     if not tree:
         tree = tc.Program()
         tree.left = tc.Stmt_list()
-        tokens = build_tree(tokens, tree.left)
+        tokens = build_tree(tokens,tree.left)
         print("End of build")
     elif tree.node == "stmt_list":
         if tokens[0].type != "$$":
-            if(tokens[0].type == 'concat'):
-                tree.left = tc.Stmt()
-                tokens = build_tree(tokens, tree.left)
-                tree.right = tc.Stmt_list()
-                tokens = build_tree(tokens, tree.right)
-            else:
-                tree.left = tc.Stmt_single()
-                tokens = build_tree(tokens, tree.left)
-                tree.right = tc.Stmt_list()
-                tokens = build_tree(tokens, tree.right)
+            tree.left = tc.Stmt_single()
+            tokens = build_tree(tokens,tree.left)
+            tree.right = tc.Stmt_list()
+            tokens = build_tree(tokens,tree.right)
         else:
             print("EOF")
             return tokens[1:]
     elif tree.node == "stmt" and tokens[0].type == "print":
         tree.child = tc.Print()
         tokens = tokens[1:]
-        tokens = build_tree(tokens, tree.child.start)
+        tokens = build_tree(tokens,tree.child.start)
         tokens = build_tree(tokens, tree.child.expr)
         tokens = build_tree(tokens, tree.child.stop)
         tokens = build_tree(tokens, tree.child.end)
         return tokens
 
-
-    elif tree.node == "stmt" and tokens[0].type == "concat":
-        tree.left = tc.Expr()
-        tokens = build_tree(tokens,tree.left)
-        tree.right = tc.End_stmt()
-        tokens = build_tree(tokens, tree.right)
-        return tokens
-
-
     elif tree.node == "stmt" and (tokens[0].type == "Integer" or tokens[0].type == "Double" or tokens[0].type == "String"):
         tree.child = tc.Asmt()
         tree.child.type = tokens[0].type
         tokens = tokens[1:]
-        tokens = build_tree(tokens, tree.child.id)
+        tokens = build_tree(tokens,tree.child.id)
         if(tokens[0].type == "="):
             tokens = tokens[1:]
             if tree.child.type == "String":
@@ -59,13 +43,6 @@ def build_tree(tokens, tree):
                 tree.child.expt = tc.D_expr_single()
             tokens = build_tree(tokens, tree.child.expr)
             tokens = build_tree(tokens, tree.child.end)
-        return tokens
-
-
-    elif tree.node == "s_expr" and tokens[0].type == "ID":
-        tree.child = tc.Id()
-        tree.child.child = tokens[0].value
-        tokens = tokens[1:]
         return tokens
 
     elif tree.node == "id" and tokens[0].type == "ID":
@@ -82,34 +59,7 @@ def build_tree(tokens, tree):
 
     elif tree.node == "expr" and tokens[0].type == "Str":
         tree.expr = tc.S_expr()
-        tokens = build_tree(tokens, tree.expr)
-
-    elif tree.node == "expr" and tokens[0].type == 'concat':
-        tree.expr = tc.S_Expr_Concat()
-        tokens = tokens[1:]
-        tokens = build_tree(tokens, tree.expr.start)
-        tokens = build_tree(tokens, tree.expr.expr1)
-        tokens = tokens[1:]
-        tokens = build_tree(tokens, tree.expr.expr2)
-        tokens = build_tree(tokens, tree.expr.stop)
-        tokens = build_tree(tokens, tree.expr.end)
-        return tokens
-
-    elif tree.node == "s_expr" and tokens[0].type == 'concat':
-        tree.expr = tc.S_Expr_Concat()
-        tokens = tokens[1:]
-        tokens = build_tree(tokens, tree.expr.start)
-        tokens = build_tree(tokens, tree.expr.expr1)
-        tokens = tokens[1:]
-        tokens = build_tree(tokens, tree.expr.expr2)
-        tokens = build_tree(tokens, tree.expr.stop)
-        tokens = build_tree(tokens, tree.expr.end)
-        return tokens
-    elif tree.node == "s_expr" and tokens[0].type == "Str":
-        tree.child = tc.Str_literal()
-        tree.child.child = tokens[0].value
-        return tokens[1:]
-
+        tokens = build_tree(tokens,tree.expr)
 
     elif tree.node == "expr" and tokens[0].type == "ID":
         tree.expr = tc.Id()
@@ -152,7 +102,6 @@ def accepts(transitions,initial,s):
             state = "break_a"
 
     return state
-
 
 def parser(fileName):
     state = 0
@@ -203,7 +152,7 @@ def parser(fileName):
                 token_i.line = [line_num,line]
                 tokens.append(token_i)
                 token_i = tc.Token()
-                # token.value = ""
+                token.value = ""
                 state = 0
                 last_state = state
 
@@ -223,7 +172,6 @@ def parser(fileName):
     token_i.type = "$$"
     tokens.append(token_i)
     return tokens
-
 
 def token_check(tokens):
     past_token = None
