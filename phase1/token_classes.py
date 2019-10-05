@@ -24,7 +24,7 @@ class Stmt:
         self.left = None
         self.right = None
 
-class Stmt_Print:
+class Stmt_single:
     def __init__(self):
         self.node = "stmt"
         self.child = None
@@ -73,13 +73,13 @@ class Sign:
     def __init__(self):
         self.node = "sign"
         self.child = ["-","+",None]
-
+"""
 class Id:
     def __init__(self):
         self.node = "id"
         self.left = L_char()
         self.right = [str(),None]
-
+"""
 class Print:
     def __init__(self):
         self.node = "print"
@@ -101,11 +101,15 @@ class Concat:
 class Asmt:
     def __init__(self):
         self.node = "asmt"
-        self.type = ["Double","Integer","String"]
-        self.id = id()
+        self.type = None
+        self.id = Id()
         self.equals = "="
-        self.expression = [D_expr(), I_expr(), S_expr()]
+        self.expr = None
         self.end = End_stmt()
+class Id:
+    def __init__(self):
+        self.node = "id"
+        self.child = None
 
 class Expr:
     def __init__(self):
@@ -120,7 +124,7 @@ class I_expr:
 class I_expr_single(I_expr):
     def __init__(self):
         super().__init__(self)
-        self.child = [id(),int()]
+        self.child = None
 
 class I_expr_triple(I_expr):
     def __init__(self):

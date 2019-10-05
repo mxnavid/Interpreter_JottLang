@@ -9,10 +9,10 @@ def build_tree(tokens,tree):
         tree = tc.Program()
         tree.left = tc.Stmt_list()
         tokens = build_tree(tokens,tree.left)
-        tree.right = "$$"
+        print("End of build")
     elif tree.node == "stmt_list":
         if tokens[0].type != "$$":
-            tree.left = tc.Stmt_Print()
+            tree.left = tc.Stmt_single()
             tokens = build_tree(tokens,tree.left)
             tree.right = tc.Stmt_list()
             tokens = build_tree(tokens,tree.right)
@@ -26,6 +26,23 @@ def build_tree(tokens,tree):
         tokens = build_tree(tokens, tree.child.expr)
         tokens = build_tree(tokens, tree.child.stop)
         tokens = build_tree(tokens, tree.child.end)
+        return tokens
+
+    elif tree.node == "stmt" and (tokens[0].type == "Integer" or tokens[0].type == "Double" or tokens[0].type == "String"):
+        tree.child = tc.Asmt()
+        tree.child.type = tokens[0].type
+        tokens = tokens[1:]
+        tokens = build_tree(tokens,tree.child.id)
+        if(tokens[0].type == "="):
+            tokens = tokens[1:]
+            tree.child.expr = tc.S_expr()
+            tokens = build_tree(tokens, tree.child.expr)
+            tokens = build_tree(tokens, tree.child.end)
+        return tokens
+
+    elif tree.node == "id" and tokens[0].type == "ID":
+        tree.child = tokens[0].value
+        return tokens[1:]
     elif tree.node == "start_paren" and tokens[0].type == "(":
         return tokens[1:]
 
@@ -43,6 +60,11 @@ def build_tree(tokens,tree):
         tree.child = tc.Str_literal()
         tree.child.child = tokens[0].value
         return tokens[1:]
+    elif tree.node == "expr" and tokens[0].type == "ID":
+        tree.expr = tc.Id()
+        tree.expr.child = tokens[0].value
+        return tokens[1:]
+
 
     return tokens
 
