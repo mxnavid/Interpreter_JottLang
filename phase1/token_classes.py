@@ -72,7 +72,7 @@ class Space:
 class Sign:
     def __init__(self):
         self.node = "sign"
-        self.child = ["-","+",None]
+        self.child = None
 """
 class Id:
     def __init__(self):
@@ -123,7 +123,7 @@ class I_expr:
 
 class I_expr_single(I_expr):
     def __init__(self):
-        super().__init__(self)
+        super().__init__()
         self.child = None
 
 class I_expr_triple(I_expr):
@@ -140,7 +140,7 @@ class D_expr:
 class D_expr_single(D_expr):
     def __init__(self):
         super().__init__(self)
-        self.child = [id(), Dbl()]
+        self.child = None
 
 class D_expr_triple(D_expr):
     def __init__(self):
@@ -173,7 +173,7 @@ class Int:
     def __init__(self):
         self.node = "int"
         self.sign = Sign()
-        self.int = Digit()
+        self.int = None
 
 class Str:
     #WIP
