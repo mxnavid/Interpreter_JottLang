@@ -52,7 +52,12 @@ def build_tree(tokens, tree):
         tokens = build_tree(tokens,tree.child.id)
         if(tokens[0].type == "="):
             tokens = tokens[1:]
-            tree.child.expr = tc.S_expr()
+            if tree.child.type == "String":
+                tree.child.expr = tc.S_expr()
+            elif tree.child.type == "Integer":
+                tree.child.expr = tc.I_expr_single()
+            elif tree.child.type == "Double":
+                tree.child.expt = tc.D_expr_single()
             tokens = build_tree(tokens, tree.child.expr)
             tokens = build_tree(tokens, tree.child.end)
         return tokens
@@ -105,6 +110,19 @@ def build_tree(tokens, tree):
         tree.expr.child = tokens[0].value
         return tokens[1:]
 
+    elif tree.node == "i_expr":
+        tree.child = tc.Int()
+        if (tokens[0].type == "-" or tokens[0].type == "+"):
+            tree.child.sign.child = tokens[0].value
+            tokens = tokens[1:]
+        tree.child.int = tokens[0].value
+        return tokens[1:]
+
+    elif tree.node == "s_expr" and tokens[0].type == "Str":
+        tree.child = tc.Str_literal()
+        tree.child.child = tokens[0].value
+        return tokens[1:]
+
 
     return tokens
 
@@ -148,7 +166,6 @@ def parser(fileName):
                     token_i.line = [line_num,line]
                     if(last_state == 14):
                         print(line)
-                        print("vlaa")
                     if token_i.value == "Integer" or token_i.value == "Double" or token_i.value == "String" \
                             or token_i.value == "print"or token_i.value == "concat" or token_i.value == "charat":
                         token_i.type = token_i.value
