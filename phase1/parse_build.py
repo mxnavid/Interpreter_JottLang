@@ -2,7 +2,7 @@
 
 import re
 from constants import dfa, term_tokens, follows
-from phase1 import token_classes as tc
+import token_classes as tc
 
 def build_tree(tokens,tree):
     if not tree:
@@ -366,7 +366,7 @@ def token_check(tokens):
         if(past_token):
             if not(token.type in follows[past_token]):
                 print("INVALID LANGUAGE")
-                print(f"LINE: {token.line[0]}")
+                print("LINE: " + str(token.line[0]))
                 print(token.line[1])
                 print(token.type)
                 print(follows[past_token])

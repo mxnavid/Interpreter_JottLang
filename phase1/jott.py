@@ -1,7 +1,7 @@
 # main driver file for jott compiler
 
 import sys
-from phase1 import parse_build as pb
+import parse_build as pb
 
 
 def main():
