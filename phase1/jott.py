@@ -3,6 +3,7 @@
 import sys
 import parse_build as pb
 
+
 def main():
     if len(sys.argv) != 2:
         print("Usage: python jott.py fileToTest.j")
@@ -15,6 +16,7 @@ def main():
         for thing in tokens:
             print(thing.type)
         tokens = pb.build_tree(tokens,None)
+
 
 if __name__ == "__main__":
     main()
