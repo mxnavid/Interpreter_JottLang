@@ -4,6 +4,8 @@ import re
 from constants import dfa, term_tokens, follows
 import token_classes as tc
 
+variables = {}
+
 def build_tree(tokens,tree):
     if not tree:
         tree = tc.Program()
@@ -31,6 +33,7 @@ def build_tree(tokens,tree):
     elif tree.node == "stmt" and (tokens[0].type == "Integer" or tokens[0].type == "Double" or tokens[0].type == "String"):
         tree.child = tc.Asmt()
         tree.child.type = tokens[0].type
+        variables[tokens[1]] = tokens[0].type
         tokens = tokens[1:]
         tokens = build_tree(tokens,tree.child.id)
         if(tokens[0].type == "="):
@@ -129,7 +132,49 @@ def build_tree(tokens,tree):
         return tokens
 
     elif tree.node == "stmt" and tokens[0].type == "ID":
-        print('sdasdasda')
+        tree.left = tc.Expr()
+        tokens = build_tree(tokens,tree.left)
+        tree.right = tc.End_stmt()
+        tokens = build_tree(tokens, tree.right)
+        return tokens
+
+    elif tree.node == "expr" and tokens[0].type == "ID":
+        type = variables[tokens[0]] # Gets variable type for expression assignment
+        if( type == "Number" and '.' not in type):
+            if (tokens[1].type == "+" or tokens[1].type == "-" or tokens[1].type == "*" or tokens[1].type == "/" or tokens[
+                1].type == "^"):
+                # Create integer expression
+                tree.expr = tc.I_expr_triple()
+                tree.expr = tc.I_expr_triple()
+                tree.expr.left = tc.Int()
+                tokens = build_tree(tokens, tree.expr.left)
+                tree.expr.op = tc.Op()
+                tokens = build_tree(tokens, tree.expr.op)
+                tree.expr.right = tc.Int()
+                tokens = build_tree(tokens, tree.expr.right)
+            else:
+                tree.expr = tc.I_expr_single()
+                tokens = build_tree(tokens, tree.expr)
+        elif( type == "Number" and '.' in type):
+            # Create double expression
+            if (tokens[1].type == "+" or tokens[1].type == "-" or tokens[1].type == "*" or tokens[1].type == "/" or tokens[
+                1].type == "^"):
+                tree.expr = tc.D_expr_triple()
+                tree.expr.left = tc.Dbl()
+                tokens = build_tree(tokens, tree.expr.left)
+                tree.expr.op = tc.Op()
+                tokens = build_tree(tokens, tree.expr.op)
+                tree.expr.right = tc.Dbl()
+                tokens = build_tree(tokens, tree.expr.right)
+            else:
+                tree.expr = tc.D_expr_single()
+                tokens = build_tree(tokens, tree.expr)
+        elif( type == "String"):
+        # Create string expression
+            print("Add string expression logic here")
+        else:
+            print("We shouldn't be here")
+        return tokens
      
     elif tree.node == "s_expr" and tokens[0].type == 'concat':
         tree.expr = tc.S_Expr_Concat()
