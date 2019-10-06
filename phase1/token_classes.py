@@ -115,6 +115,17 @@ class S_Expr_Concat:
         self.stop = End_paren()
         self.end = End_stmt()
 
+class S_Expr_CharAt:
+    def __init__(self):
+        self.node = "s_expr"
+        self.concat = "charAt"
+        self.start = Start_paren()
+        self.expr1 = S_expr()
+        self.expr2 = I_expr()
+        self.comma = ","
+        self.stop = End_paren()
+        self.end = End_stmt()
+
 class Addition:
     def __init__(self):
         self.node = "addition"
