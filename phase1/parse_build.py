@@ -56,7 +56,6 @@ def build_tree(tokens,tree):
         return tokens
 
     elif tree.node == "stmt" and tokens[0].type == "concat":
-        print("I am concat")
         tree.left = tc.Expr()
         tokens = build_tree(tokens,tree.left)
         tree.right = tc.End_stmt()
@@ -108,6 +107,16 @@ def build_tree(tokens,tree):
         tree.expr = tc.Id()
         tree.expr.child = tokens[0].value
         return tokens[1:]
+
+    elif tree.node == "i_expr" and tokens[0].type == "Number":
+        tree.expr = tc.I_expr_triple;
+        tree.expr.left = tc.Int()
+        tokens = build_tree(tokens, tree.expr.left)
+        tree.expr.op = tc.Op()
+        tokens = build_tree(tokens, tree.expr.op)
+        tree.expr.right = tc.Int()
+        tokens = build_tree(tokens, tree.expr.right)
+        return tokens
 
     elif tree.node == "expr" and tokens[0].type == "Number" and '.' not in tokens[0].value:
         if (tokens[1].type == "+" or tokens[1].type == "-" or tokens[1].type == "*" or tokens[1].type == "/" or tokens[

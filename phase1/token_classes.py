@@ -115,6 +115,13 @@ class S_Expr_Concat:
         self.stop = End_paren()
         self.end = End_stmt()
 
+class Addition:
+    def __init__(self):
+        self.node = "addition"
+        self.type = "addition"
+        self.start = Digit()
+        self.end = End_stmt()
+
 
 class Asmt:
     def __init__(self):
