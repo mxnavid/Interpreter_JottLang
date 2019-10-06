@@ -2,7 +2,7 @@
 
 import re
 from constants import dfa, term_tokens, follows
-from phase1 import token_classes as tc
+import token_classes as tc
 
 def build_tree(tokens,tree):
     if not tree:
@@ -188,7 +188,7 @@ def build_tree(tokens,tree):
 
     elif tree.node == "i_expr" and tokens[0].type == "Number":
         #tree.expr = tc.I_expr_triple()
-        if tokens[1].value == ";":
+        if tokens[1].value == ";" or tokens[1].value == ")" or tokens[1].value == "(":
             tree.child = tc.Int()
             tokens = build_tree(tokens, tree.child)
         else:
@@ -202,7 +202,7 @@ def build_tree(tokens,tree):
 
     elif tree.node == "d_expr" and tokens[0].type == "Number":
         #tree.expr = tc.D_expr_triple()
-        if tokens[1].value == ";":
+        if tokens[1].value == ";" or tokens[1].value == ")" or tokens[1].value == "(":
             tree.child = tc.Dbl()
             tokens = build_tree(tokens, tree.child)
         else:
