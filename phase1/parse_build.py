@@ -84,6 +84,26 @@ def build_tree(tokens,tree):
         tokens = build_tree(tokens, tree.expr.end)
         return tokens
 
+    elif tree.node == "stmt" and tokens[0].type == "charAt":
+        tree.left = tc.Expr()
+        tokens = build_tree(tokens, tree.left)
+        tree.right = tc.End_stmt()
+        tokens = build_tree(tokens, tree.right)
+        return tokens
+
+    elif tree.node == "expr" and tokens[0].type == 'charAt':
+        tree.expr = tc.S_Expr_CharAt()
+        tokens = tokens[1:]
+        tokens = build_tree(tokens, tree.expr.start)
+        tokens = build_tree(tokens, tree.expr.expr1)
+        tokens = tokens[1:]
+        tokens = build_tree(tokens, tree.expr.expr2)
+        tokens = build_tree(tokens, tree.expr.stop)
+        tokens = build_tree(tokens, tree.expr.end)
+        return tokens
+
+
+
     elif tree.node == "start_paren" and tokens[0].type == "(":
         return tokens[1:]
 
@@ -225,7 +245,7 @@ def parser(fileName):
                     if(last_state == 14):
                         print(line)
                     if token_i.value == "Integer" or token_i.value == "Double" or token_i.value == "String" \
-                            or token_i.value == "print"or token_i.value == "concat" or token_i.value == "charat":
+                            or token_i.value == "print"or token_i.value == "concat" or token_i.value == "charAt":
                         token_i.type = token_i.value
                     else:
                         token_i.type = term_tokens[last_state]
@@ -235,7 +255,7 @@ def parser(fileName):
                 else:
                     token_i.line = [line_num,line]
                     if token_i.value == "Integer" or token_i.value == "Double" or token_i.value == "String" \
-                            or token_i.value == "print"or token_i.value == "concat" or token_i.value == "charat":
+                            or token_i.value == "print"or token_i.value == "concat" or token_i.value == "charAt":
                         token_i.type = token_i.value
                     else:
                         token_i.type = term_tokens[last_state]
@@ -247,7 +267,7 @@ def parser(fileName):
                 state= accepts(dfa,state,char)
             if state == "break_a":
                 if token_i.value == "Integer" or token_i.value == "Double" or token_i.value == "String" \
-                        or token_i.value == "print" or token_i.value == "concat" or token_i.value == "charat":
+                        or token_i.value == "print" or token_i.value == "concat" or token_i.value == "charAt":
                     token_i.type = token_i.value
                 else:
                     token_i.type = term_tokens[last_state]
