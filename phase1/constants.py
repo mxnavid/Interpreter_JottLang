@@ -29,7 +29,7 @@ dfa = {0:{"\n": 0, " ":0, "\t": 0, ".":2, "=":5, "(":6, ")":7,
 follows = {
     "Str": {')',';', ','},
     "Number": {'+', '-', '*', '/', '^', ')', ';'},
-    ";": {"Integer", "Double", "String", "$$", "print", "concat", "charAt"},
+    ";": {"Integer", "Double", "String", "$$", "print", "concat", "charAt", "ID"},
     "Integer": {"ID"},
     "Double": {"ID"},
     "String": {"ID"},

@@ -127,6 +127,9 @@ def build_tree(tokens,tree):
         tokens = build_tree(tokens, tree.expr.stop)
         tokens = build_tree(tokens, tree.expr.end)
         return tokens
+
+    elif tree.node == "stmt" and tokens[0].type == "ID":
+        print('sdasdasda')
      
     elif tree.node == "s_expr" and tokens[0].type == 'concat':
         tree.expr = tc.S_Expr_Concat()
@@ -185,22 +188,30 @@ def build_tree(tokens,tree):
 
     elif tree.node == "i_expr" and tokens[0].type == "Number":
         #tree.expr = tc.I_expr_triple()
-        tree.left = tc.Int()
-        tokens = build_tree(tokens, tree.left)
-        tree.op = tc.Op()
-        tokens = build_tree(tokens, tree.op)
-        tree.right = tc.Int()
-        tokens = build_tree(tokens, tree.right)
+        if tokens[1].value == ";":
+            tree.child = tc.Int()
+            tokens = build_tree(tokens, tree.child)
+        else:
+            tree.left = tc.Int()
+            tokens = build_tree(tokens, tree.left)
+            tree.op = tc.Op()
+            tokens = build_tree(tokens, tree.op)
+            tree.right = tc.Int()
+            tokens = build_tree(tokens, tree.right)
         return tokens
 
     elif tree.node == "d_expr" and tokens[0].type == "Number":
         #tree.expr = tc.D_expr_triple()
-        tree.left = tc.Dbl()
-        tokens = build_tree(tokens, tree.left)
-        tree.op = tc.Op()
-        tokens = build_tree(tokens, tree.op)
-        tree.right = tc.Dbl()
-        tokens = build_tree(tokens, tree.right)
+        if tokens[1].value == ";":
+            tree.child = tc.Dbl()
+            tokens = build_tree(tokens, tree.child)
+        else:
+            tree.left = tc.Dbl()
+            tokens = build_tree(tokens, tree.left)
+            tree.op = tc.Op()
+            tokens = build_tree(tokens, tree.op)
+            tree.right = tc.Dbl()
+            tokens = build_tree(tokens, tree.right)
         return tokens
 
     elif tree.node == "expr" and tokens[0].type == "Number" and '.' not in tokens[0].value:
