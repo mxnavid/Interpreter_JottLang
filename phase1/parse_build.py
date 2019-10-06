@@ -2,7 +2,7 @@
 
 import re
 from constants import dfa, term_tokens, follows
-import token_classes as tc
+from phase1 import token_classes as tc
 
 def build_tree(tokens,tree):
     if not tree:
@@ -274,7 +274,7 @@ def parser(fileName):
                 token_i.line = [line_num,line]
                 tokens.append(token_i)
                 token_i = tc.Token()
-                token.value = ""
+                token_i.value = ""
                 state = 0
                 last_state = state
 
