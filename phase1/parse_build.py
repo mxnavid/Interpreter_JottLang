@@ -48,6 +48,40 @@ def build_tree(tokens,tree):
     elif tree.node == "id" and tokens[0].type == "ID":
         tree.child = tokens[0].value
         return tokens[1:]
+
+    elif tree.node == "s_expr" and tokens[0].type == "ID":
+        tree.child = tc.Id()
+        tree.child.child = tokens[0].value
+        tokens = tokens[1:]
+        return tokens
+    elif tree.node == "stmt" and tokens[0].type == "concat":
+        print("I am concat")
+        tree.left = tc.Expr()
+        tokens = build_tree(tokens,tree.left)
+        tree.right = tc.End_stmt()
+        tokens = build_tree(tokens, tree.right)
+        return tokens
+    elif tree.node == "expr" and tokens[0].type == 'concat':
+        tree.expr = tc.S_Expr_Concat()
+        tokens = tokens[1:]
+        tokens = build_tree(tokens, tree.expr.start)
+        tokens = build_tree(tokens, tree.expr.expr1)
+        tokens = tokens[1:]
+        tokens = build_tree(tokens, tree.expr.expr2)
+        tokens = build_tree(tokens, tree.expr.stop)
+        tokens = build_tree(tokens, tree.expr.end)
+        return tokens
+    elif tree.node == "s_expr" and tokens[0].type == 'concat':
+        tree.expr = tc.S_Expr_Concat()
+        tokens = tokens[1:]
+        tokens = build_tree(tokens, tree.expr.start)
+        tokens = build_tree(tokens, tree.expr.expr1)
+        tokens = tokens[1:]
+        tokens = build_tree(tokens, tree.expr.expr2)
+        tokens = build_tree(tokens, tree.expr.stop)
+        tokens = build_tree(tokens, tree.expr.end)
+        return tokens
+
     elif tree.node == "start_paren" and tokens[0].type == "(":
         return tokens[1:]
 
