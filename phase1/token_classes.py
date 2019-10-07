@@ -13,6 +13,9 @@ class Program:
         self.left = Stmt_list()
         self.right = "$$"
 
+    def eval(self):
+        return self.left.eval();
+
 
 class Stmt_list:
     def __init__(self):
@@ -86,6 +89,9 @@ class Sign:
     def __init__(self):
         self.node = "sign"
         self.child = None
+
+    def eval(self):
+        return self.child.eval()
 """
 class Id:
     def __init__(self):
@@ -103,6 +109,9 @@ class Print:
         self.stop = End_paren()
         self.end = End_stmt()
 
+    def eval(self):
+        print(self.expr.eval())
+        return
 
 class S_Expr_Concat:
     def __init__(self):
@@ -143,12 +152,16 @@ class Asmt:
         self.expr = None
         self.end = End_stmt()
 
+    def eval(self):
+        return  # variable assignment should be handled outside of this I believe
 
 class Id:
     def __init__(self):
         self.node = "id"
         self.child = None
 
+    def eval(self):
+        return self.child.eval()
 
 class Expr:
     def __init__(self):
@@ -156,6 +169,8 @@ class Expr:
         #self.expr = [i_expr(),d_expr(),s_expr(),id()]
         self.expr = None
 
+    def eval(self):
+        return self.expr.eval()
 
 class I_expr:
     def __init__(self):
@@ -167,6 +182,8 @@ class I_expr_single(I_expr):
         super().__init__()
         self.child = None
 
+    def eval(self):
+        return self.child.eval()
 
 class I_expr_triple(I_expr):
     def __init__(self):
@@ -175,6 +192,20 @@ class I_expr_triple(I_expr):
         self.op = None
         self.right = None
 
+    def eval(self):
+        left = self.left.eval()
+        right = self.right.eval()
+
+        if self.op.op == "+":
+            return left + right
+        elif self.op.op == "-":
+            return left - right
+        elif self.op.op == "*":
+            return left * right
+        elif self.op.op == "/":
+            return left // right  # floor division
+        else:  # op == ^
+            return left ** right
 
 class D_expr:
     def __init__(self):
@@ -186,6 +217,8 @@ class D_expr_single(D_expr):
         super().__init__()
         self.child = None
 
+    def eval(self):
+        return self.child.eval()
 
 class D_expr_triple(D_expr):
     def __init__(self):
@@ -194,18 +227,37 @@ class D_expr_triple(D_expr):
         self.op = None
         self.right = None
 
+    def eval(self):
+        left = self.left.eval()
+        right = self.right.eval()
+
+        if self.op.op == "+":
+            return left + right
+        elif self.op.op == "-":
+            return left - right
+        elif self.op.op == "*":
+            return left * right
+        elif self.op.op == "/":
+            return left / right
+        else:  # op == ^
+            return left ** right
+
 
 class S_expr:
     def __init__(self):
         self.node = "s_expr"
         self.child = None
 
+    def eval(self):
+        return self.child.eval()
 
 class Op:
     def __init__(self):
         self.node = "op"
         self.op = None
 
+    def eval(self):
+        return self.op.eval()
 
 class Dbl:
     #WIP
@@ -213,6 +265,11 @@ class Dbl:
         self.node = "dbl"
         self.sign = Sign()
         self.dbl = None
+
+    def eval(self):
+        if self.sign.child == "-":
+            return self.dbl * -1
+        return self.dbl
 
 
 class Int:
@@ -222,6 +279,11 @@ class Int:
         self.sign = Sign()
         self.int = None
 
+    def eval(self):
+        if self.sign.child == "-":
+            return self.int * -1
+        return self.int
+
 
 class Str:
     #WIP
@@ -229,9 +291,15 @@ class Str:
         self.node = "str"
         self.str = [Char(), Space(), str(), None]
 
+    def eval(self):
+        return self.str
+
 
 class Str_literal:
     #WIP
     def __init__(self):
         self.node = "str_literal"
         self.child = None
+
+    def eval(self):
+        return self.child
