@@ -384,6 +384,8 @@ def parser(fileName):
     line = ""
     for line in open(fileName,"r"):
         line_num += 1
+        if(len(line) >= 2 and line[0:2] == "//"): # ignore comments
+            continue
         for char in line:
             if char != " " and char != "\n":
                 token_i.value += char
