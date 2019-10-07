@@ -293,7 +293,10 @@ def build_tree(tokens,tree):
             tokens = build_tree(tokens, tree.expr.left)
             tree.expr.op = tc.Op()
             tokens = build_tree(tokens, tree.expr.op)
-            tree.expr.right = tc.Int()
+            if (tokens[1].type == "+" or tokens[1].type == "-" or tokens[1].type == "*" or tokens[1].type == "/" or tokens[1].type == "^"):
+                tree.expr.right = tc.I_expr_triple()
+            else:
+                tree.expr.right = tc.Int()
             tokens = build_tree(tokens, tree.expr.right)
         else:
             tree.expr = tc.I_expr_single()
@@ -307,8 +310,12 @@ def build_tree(tokens,tree):
             tokens = build_tree(tokens, tree.expr.left)
             tree.expr.op = tc.Op()
             tokens = build_tree(tokens, tree.expr.op)
-            tree.expr.right = tc.Dbl()
+            if (tokens[1].type == "+" or tokens[1].type == "-" or tokens[1].type == "*" or tokens[1].type == "/" or tokens[1].type == "^"):
+                tree.expr.right = tc.D_expr_triple()
+            else:
+                tree.expr.right = tc.Dbl()
             tokens = build_tree(tokens, tree.expr.right)
+
         else:
             tree.expr = tc.D_expr_single()
             tokens = build_tree(tokens, tree.expr)
