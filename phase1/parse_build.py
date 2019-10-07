@@ -10,21 +10,21 @@ def build_tree(tokens,tree):
     if not tree:
         tree = tc.Program()
         tree.left = tc.Stmt_list()
-        tokens = build_tree(tokens,tree.left)
+        tokens = build_tree(tokens, tree.left)
         print("End of build")
     elif tree.node == "stmt_list":
         if tokens[0].type != "$$":
             tree.left = tc.Stmt_single()
-            tokens = build_tree(tokens,tree.left)
+            tokens = build_tree(tokens, tree.left)
             tree.right = tc.Stmt_list()
-            tokens = build_tree(tokens,tree.right)
+            tokens = build_tree(tokens, tree.right)
         else:
             print("EOF")
             return tokens[1:]
     elif tree.node == "stmt" and tokens[0].type == "print":
         tree.child = tc.Print()
         tokens = tokens[1:]
-        tokens = build_tree(tokens,tree.child.start)
+        tokens = build_tree(tokens, tree.child.start)
         tokens = build_tree(tokens, tree.child.expr)
         tokens = build_tree(tokens, tree.child.stop)
         tokens = build_tree(tokens, tree.child.end)

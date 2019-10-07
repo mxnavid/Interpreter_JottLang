@@ -121,7 +121,7 @@ class S_Expr_CharAt:
         self.concat = "charAt"
         self.start = Start_paren()
         self.expr1 = S_expr()
-        self.expr2 = I_expr()
+        self.expr2 = Expr()
         self.comma = ","
         self.stop = End_paren()
         self.end = End_stmt()

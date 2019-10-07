@@ -1,1 +1,2 @@
-charAt( "foobar", 2);
+Integer u = 5;
+charAt("Foodbar", u);
