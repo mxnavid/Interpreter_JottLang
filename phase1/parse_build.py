@@ -353,7 +353,6 @@ def build_tree(tokens,tree):
         tree.child.child = tokens[0].value
         return tokens[1:]
 
-
     return tokens
 
 def accepts(transitions,initial,s):
