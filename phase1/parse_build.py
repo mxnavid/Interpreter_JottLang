@@ -33,7 +33,8 @@ def build_tree(tokens,tree):
     elif tree.node == "stmt" and (tokens[0].type == "Integer" or tokens[0].type == "Double" or tokens[0].type == "String"):
         tree.child = tc.Asmt()
         tree.child.type = tokens[0].type
-        variables[tokens[1]] = tokens[0].type
+        variables[tokens[1].value] = tokens[0].type
+        #print(variables)
         tokens = tokens[1:]
         tokens = build_tree(tokens,tree.child.id)
         if(tokens[0].type == "="):
@@ -139,7 +140,7 @@ def build_tree(tokens,tree):
         return tokens
 
     elif tree.node == "expr" and tokens[0].type == "ID":
-        type = variables[tokens[0]] # Gets variable type for expression assignment
+        type = variables[tokens[0].value] # Gets variable type for expression assignment
         if( type == "Number" and '.' not in type):
             if (tokens[1].type == "+" or tokens[1].type == "-" or tokens[1].type == "*" or tokens[1].type == "/" or tokens[
                 1].type == "^"):
