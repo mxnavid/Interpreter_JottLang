@@ -264,7 +264,10 @@ def build_tree(tokens,tree):
             tokens = build_tree(tokens, tree.left)
             tree.op = tc.Op()
             tokens = build_tree(tokens, tree.op)
-            tree.right = tc.Int()
+            if (tokens[1].type == "+" or tokens[1].type == "-" or tokens[1].type == "*" or tokens[1].type == "/" or tokens[1].type == "^"):
+                tree.right = tc.I_expr_triple()
+            else: # currently does not work :(
+                tree.right = tc.Int()
             tokens = build_tree(tokens, tree.right)
         return tokens
 
