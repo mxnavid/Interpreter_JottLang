@@ -35,7 +35,6 @@ def build_tree(tokens, tree):
         tree.child = tc.Asmt()
         tree.child.type = tokens[0].type
         variables[tokens[1].value] = tokens[0].type
-        #print(variables)
         tokens = tokens[1:]
         tokens = build_tree(tokens, tree.child.id)
         if tokens[0].type == "=":
@@ -78,8 +77,10 @@ def build_tree(tokens, tree):
                     tokens = build_tree(tokens, tree.child.end)
 
             elif tree.child.type == "Double":
-                if tokens[1].type == "+" or tokens[1].type == "-" or tokens[1].type == "*" or tokens[1].type == "/" or tokens[1].type == "^":
-                    if tokens[3].type == "+" or tokens[3].type == "-" or tokens[3].type == "*" or tokens[3].type == "/" or tokens[3].type == "^":
+                if tokens[1].type == "+" or tokens[1].type == "-" or tokens[1].type == "*" or tokens[1].type == "/" or \
+                        tokens[1].type == "^":
+                    if tokens[3].type == "+" or tokens[3].type == "-" or tokens[3].type == "*" or tokens[3].type == "/"\
+                            or tokens[3].type == "^":
                         print("dexpr op dexpr")
                         tree.child.expr = tc.D_expr_triple()
                         tree.child.expr.left = tc.D_expr_triple()
@@ -255,7 +256,6 @@ def build_tree(tokens, tree):
         return tokens[1:]
 
     elif tree.node == "i_expr" and tokens[0].type == "Number":
-        #tree.expr = tc.I_expr_triple()
         if tokens[1].value == ";" or tokens[1].value == ")" or tokens[1].value == "(":
             tree.child = tc.Int()
             tokens = build_tree(tokens, tree.child)
