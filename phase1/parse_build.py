@@ -41,6 +41,8 @@ def build_tree(tokens,tree):
             tokens = tokens[1:]
             if tree.child.type == "String":
                 tree.child.expr = tc.S_expr()
+                tokens = build_tree(tokens,tree.child.expr)
+                tokens = tokens[1:]
             elif tree.child.type == "Integer":
                 if tokens[1].type == "+" or tokens[1].type == "-" or tokens[1].type == "*" or tokens[1].type == "/" or tokens[1].type == "^":
                     if tokens[3].type == "+" or tokens[3].type == "-" or tokens[3].type == "*" or tokens[3].type == "/" or tokens[3].type == "^":
@@ -141,38 +143,58 @@ def build_tree(tokens,tree):
 
     elif tree.node == "expr" and tokens[0].type == "ID":
         type = variables[tokens[0].value] # Gets variable type for expression assignment
-        if( type == "Number" and '.' not in type):
+        if( type == "Integer"):
             if (tokens[1].type == "+" or tokens[1].type == "-" or tokens[1].type == "*" or tokens[1].type == "/" or tokens[
                 1].type == "^"):
                 # Create integer expression
                 tree.expr = tc.I_expr_triple()
                 tree.expr = tc.I_expr_triple()
-                tree.expr.left = tc.Int()
+                tree.expr.left = tc.Id()
                 tokens = build_tree(tokens, tree.expr.left)
                 tree.expr.op = tc.Op()
                 tokens = build_tree(tokens, tree.expr.op)
-                tree.expr.right = tc.Int()
-                tokens = build_tree(tokens, tree.expr.right)
+
+                if (tokens[1].value == ';' or tokens[1].value == ')' or tokens[1].value == '('):
+                    if tokens[0].type == "ID":
+                        tree.expr.right = tc.Id()
+                    else:
+                        tree.expr.right = tc.Int()
+                    tokens = build_tree(tokens, tree.expr.right)
+                else:
+                    tree.expr.right = tc.I_expr_triple()
+                    tokens = build_tree(tokens, tree.expr.right)
             else:
                 tree.expr = tc.I_expr_single()
                 tokens = build_tree(tokens, tree.expr)
-        elif( type == "Number" and '.' in type):
+
+        elif( type == "Double"):
             # Create double expression
             if (tokens[1].type == "+" or tokens[1].type == "-" or tokens[1].type == "*" or tokens[1].type == "/" or tokens[
                 1].type == "^"):
                 tree.expr = tc.D_expr_triple()
-                tree.expr.left = tc.Dbl()
+                tree.expr = tc.D_expr_triple()
+                tree.expr.left = tc.Id()
                 tokens = build_tree(tokens, tree.expr.left)
                 tree.expr.op = tc.Op()
                 tokens = build_tree(tokens, tree.expr.op)
-                tree.expr.right = tc.Dbl()
-                tokens = build_tree(tokens, tree.expr.right)
+                if (tokens[1].value == ';' or tokens[1].value == ')' or tokens[1].value == '('):
+                    if tokens[0].type == "ID":
+                        tree.expr.right = tc.Id()
+                    else:
+                        tree.expr.right = tc.Dbl()
+                    tokens = build_tree(tokens, tree.expr.right)
+                else:
+                    tree.expr.right = tc.D_expr_triple()
+                    tokens = build_tree(tokens, tree.expr.right)
             else:
                 tree.expr = tc.D_expr_single()
                 tokens = build_tree(tokens, tree.expr)
+
         elif( type == "String"):
         # Create string expression
-            print("Add string expression logic here")
+            if tokens[1].type == ")":
+                tree.expr = tc.Id()
+                tokens = build_tree(tokens,tree.expr)
         else:
             print("We shouldn't be here")
         return tokens
@@ -296,18 +318,26 @@ def build_tree(tokens,tree):
         return tokens[1:]
 
     elif tree.node == "i_expr":
-        tree.child = tc.Int()
-        if (tokens[0].type == "-" or tokens[0].type == "+"):
-            tree.child.sign.child = tokens[0].value
-            tokens = tokens[1:]
-        tree.child.int = tokens[0].value
+        if(tokens[0].type == "ID"):
+            tree.child = tc.Id()
+            tree.child.child = tokens[0].value
+        else:
+            tree.child = tc.Int()
+            if (tokens[0].type == "-" or tokens[0].type == "+"):
+                tree.child.sign.child = tokens[0].value
+                tokens = tokens[1:]
+            tree.child.int = tokens[0].value
         return tokens[1:]
 
     elif tree.node == 'dbl':
-        if (tokens[0].type == "-" or tokens[0].type == "+"):
-            tree.sign.child = tokens[0].value
-            tokens = tokens[1:]
-        tree.dbl = tokens[0].value
+        if(tokens[0].type == "ID"):
+            tree.child = tc.Id()
+            tree.child.child = tokens[0].value
+        else:
+            if (tokens[0].type == "-" or tokens[0].type == "+"):
+                tree.sign.child = tokens[0].value
+                tokens = tokens[1:]
+            tree.dbl = tokens[0].value
         return tokens[1:]
 
     elif tree.node == "d_expr":
