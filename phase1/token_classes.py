@@ -130,7 +130,6 @@ class S_Expr_Concat:
         self.expr2 = S_expr()
         self.comma = ","
         self.stop = End_paren()
-        self.end = End_stmt()
     def eval(self):
         return self.expr1.eval()+self.expr2.eval()
 
@@ -150,7 +149,6 @@ class S_Expr_CharAt:
         self.expr2 = Expr()
         self.comma = ","
         self.stop = End_paren()
-        self.end = End_stmt()
 
 
 
@@ -164,7 +162,7 @@ class Asmt:
         self.end = End_stmt()
 
     def eval(self):
-        variables[self.id.eval()] =  self.expr.eval() # variable assignment should be handled outside of this I believe
+        variables[self.id.eval()] =  self.expr.eval()
 
 class Id:
     def __init__(self):
