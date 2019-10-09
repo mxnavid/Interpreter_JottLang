@@ -14,7 +14,7 @@ class Program:
         self.right = "$$"
 
     def eval(self):
-        return self.left.eval();
+        return self.left.eval()
 
 
 class Stmt_list:
@@ -22,6 +22,9 @@ class Stmt_list:
         self.node = "stmt_list"
         self.left = None
         self.right = None
+    def eval(self):
+        if self.left and self.right:
+            return self.left.eval()
 
 
 class Stmt:
@@ -35,6 +38,9 @@ class Stmt_single:
     def __init__(self):
         self.node = "stmt"
         self.child = None
+
+    def eval(self):
+        self.child.eval()
 
 
 class End_stmt:
@@ -111,7 +117,6 @@ class Print:
 
     def eval(self):
         print(self.expr.eval())
-        return
 
 class S_Expr_Concat:
     def __init__(self):

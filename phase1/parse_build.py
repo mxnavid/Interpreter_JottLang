@@ -2,7 +2,7 @@
 import re
 from constants import dfa, term_tokens, follows
 import token_classes as tc
-
+from code_gen import gen_code
 variables = {}
 
 
@@ -12,6 +12,7 @@ def build_tree(tokens, tree):
         tree.left = tc.Stmt_list()
         tokens = build_tree(tokens, tree.left)
         print("End of build")
+        gen_code(tree)
     elif tree.node == "stmt_list":
         if tokens[0].type != "$$":
             tree.left = tc.Stmt_single()
