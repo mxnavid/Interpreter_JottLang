@@ -124,6 +124,13 @@ class S_Expr_Concat:
         self.stop = End_paren()
         self.end = End_stmt()
 
+    def eval(self):
+        result_string = ""
+        result_string += self.expr1
+        result_string += self.expr2
+        return result_string
+
+
 class S_Expr_CharAt:
     def __init__(self):
         self.node = "s_expr"
@@ -135,12 +142,6 @@ class S_Expr_CharAt:
         self.stop = End_paren()
         self.end = End_stmt()
 
-class Addition:
-    def __init__(self):
-        self.node = "addition"
-        self.type = "addition"
-        self.start = Digit()
-        self.end = End_stmt()
 
 
 class Asmt:
