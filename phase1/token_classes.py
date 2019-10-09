@@ -1,4 +1,5 @@
 # token classes
+variables = {}
 
 class Token:
     def __init__(self):
@@ -158,7 +159,7 @@ class Asmt:
         self.end = End_stmt()
 
     def eval(self):
-        return  # variable assignment should be handled outside of this I believe
+        variables[self.id.eval()] =  self.expr.eval() # variable assignment should be handled outside of this I believe
 
 class Id:
     def __init__(self):
@@ -166,7 +167,10 @@ class Id:
         self.child = None
 
     def eval(self):
-        return self.child.eval()
+        if self.child in variables:
+            return variables[self.child]
+        else:
+            return self.child
 
 class Expr:
     def __init__(self):
@@ -273,8 +277,8 @@ class Dbl:
 
     def eval(self):
         if self.sign.child == "-":
-            return self.dbl * -1
-        return self.dbl
+            return float(self.dbl) * -1
+        return float(self.dbl)
 
 
 class Int:
@@ -286,8 +290,8 @@ class Int:
 
     def eval(self):
         if self.sign.child == "-":
-            return self.int * -1
-        return self.int
+            return int(self.int) * -1
+        return int(self.int)
 
 
 class Str:
@@ -307,4 +311,4 @@ class Str_literal:
         self.child = None
 
     def eval(self):
-        return self.child
+        return self.child.replace("\"","")
