@@ -130,14 +130,11 @@ class S_Expr_Concat:
         self.expr2 = S_expr()
         self.comma = ","
         self.stop = End_paren()
+
     def eval(self):
         return self.expr1.eval()+self.expr2.eval()
 
-    def eval(self):
-        result_string = ""
-        result_string += self.expr1
-        result_string += self.expr2
-        return result_string
+
 
 
 class S_Expr_CharAt:
@@ -150,7 +147,10 @@ class S_Expr_CharAt:
         self.comma = ","
         self.stop = End_paren()
 
-
+    def eval(self):
+        pos = int(self.expr2.eval())
+        given_string = str(self.expr1.eval())
+        return given_string[pos]
 
 class Asmt:
     def __init__(self):
