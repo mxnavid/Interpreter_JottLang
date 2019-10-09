@@ -33,6 +33,8 @@ class Stmt:
         self.node = "stmt"
         self.left = None
         self.right = None
+    def eval(self):
+        self.left.eval()
 
 
 class Stmt_single:
@@ -129,6 +131,8 @@ class S_Expr_Concat:
         self.comma = ","
         self.stop = End_paren()
         self.end = End_stmt()
+    def eval(self):
+        return self.expr1.eval()+self.expr2.eval()
 
     def eval(self):
         result_string = ""
