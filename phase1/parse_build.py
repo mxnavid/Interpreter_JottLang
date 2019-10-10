@@ -2,9 +2,9 @@
 import re
 from constants import dfa, term_tokens, follows
 import token_classes as tc
-from code_gen import gen_code
+from code_gen import gen_code, verify_code
 variables = {}
-
+token_copy = {}
 
 def build_tree(tokens, tree):
     if not tree:
@@ -12,7 +12,8 @@ def build_tree(tokens, tree):
         tree.left = tc.Stmt_list()
         tokens = build_tree(tokens, tree.left)
         print("End of build")
-        gen_code(tree)
+        if verify_code(tree, token_copy):
+            gen_code(tree)
     elif tree.node == "stmt_list":
         if tokens[0].type != "$$":
             if tokens[0].type == 'concat' or tokens[0].type == 'charat':
@@ -299,13 +300,19 @@ def build_tree(tokens, tree):
         if (tokens[1].type == "+" or tokens[1].type == "-" or tokens[1].type == "*" or tokens[1].type == "/" or \
                         tokens[1].type == "^"):
             tree.expr = tc.I_expr_triple()
-            tree.expr.left = tc.Int()
+            # vvv This stuff will need to be added to multiple elifs, but it's not working properly yet
+            # if len(tokens) > 2 and tokens[2].type == "-":
+            #     tree.expr.left = tc.I_expr_triple()
+            # else:
+            #     tree.expr.left = tc.Int()
+            tree.expr.left = tc.Int() # comment this out when testing the above commented out code
             tokens = build_tree(tokens, tree.expr.left)
             tree.expr.op = tc.Op()
             tokens = build_tree(tokens, tree.expr.op)
             if tokens[1].type == "+" or tokens[1].type == "-" or tokens[1].type == "*" or tokens[1].type == "/" or \
                             tokens[1].type == "^":
                 tree.expr.right = tc.I_expr_triple()
+            # vvvv This elif block is unreachable as far as I can tell, it should be removed
             elif tokens[0].type == "-":
                 if tokens[2].type == "+" or tokens[2].type == "-" or tokens[2].type == "*" or tokens[2].type == "/" or \
                                 tokens[2].type == "^":
@@ -483,6 +490,7 @@ def parser(file_name):
 
 
 def token_check(tokens):
+    global token_copy
     past_token = None
     for token in tokens:
         if past_token:
@@ -494,4 +502,5 @@ def token_check(tokens):
                 print(follows[past_token])
                 return 0
         past_token = token.type
+    token_copy = tokens
     return 1
