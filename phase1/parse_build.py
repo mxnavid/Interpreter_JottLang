@@ -11,7 +11,7 @@ def build_tree(tokens, tree):
         tree = tc.Program()
         tree.left = tc.Stmt_list()
         tokens = build_tree(tokens, tree.left)
-        print("End of build")
+        # print("End of build")
         if verify_code(tree, token_copy):
             gen_code(tree)
     elif tree.node == "stmt_list":
@@ -27,7 +27,7 @@ def build_tree(tokens, tree):
             tree.right = tc.Stmt_list()
             tokens = build_tree(tokens, tree.right)
         else:
-            print("EOF")
+            # print("EOF")
             return tokens[1:]
     elif tree.node == "stmt" and tokens[0].type == "print":
         tree.child = tc.Print()
@@ -56,7 +56,7 @@ def build_tree(tokens, tree):
                                 tokens[1].type == "^":
                     if tokens[3].type == "+" or tokens[3].type == "-" or tokens[3].type == "*" or tokens[3].type == "/" \
                             or tokens[3].type == "^":
-                        print("iexpr op iexpr")
+                        # print("iexpr op iexpr")
                         tree.child.expr = tc.I_expr_triple()
                         tree.child.expr.left = tc.I_expr_triple()
                         tokens = build_tree(tokens, tree.child.expr.left)
@@ -69,7 +69,7 @@ def build_tree(tokens, tree):
                             tree.child.expr.right = tc.I_expr_triple()
                             tokens = build_tree(tokens, tree.child.expr.right)
                     else:
-                        print("int op int")
+                        # print("int op int")
                         tree.child.expr = tc.I_expr_triple()
                         tree.child.expr.left = tc.Int()
                         tokens = build_tree(tokens, tree.child.expr.left)
@@ -89,7 +89,7 @@ def build_tree(tokens, tree):
                                 tokens[1].type == "^":
                     if tokens[3].type == "+" or tokens[3].type == "-" or tokens[3].type == "*" or tokens[3].type == "/" \
                             or tokens[3].type == "^":
-                        print("dexpr op dexpr")
+                        # print("dexpr op dexpr")
                         tree.child.expr = tc.D_expr_triple()
                         tree.child.expr.left = tc.D_expr_triple()
                         tokens = build_tree(tokens, tree.child.expr.left)
@@ -102,7 +102,7 @@ def build_tree(tokens, tree):
                             tree.child.expr.right = tc.D_expr_triple()
                             tokens = build_tree(tokens, tree.child.expr.right)
                     else:
-                        print("dbl op dbl")
+                        # print("dbl op dbl")
                         tree.child.expr = tc.D_expr_triple()
                         tree.child.expr.left = tc.Dbl()
                         tokens = build_tree(tokens, tree.child.expr.left)
@@ -206,8 +206,9 @@ def build_tree(tokens, tree):
             if tokens[1].type == ")":
                 tree.expr = tc.Id()
                 tokens = build_tree(tokens, tree.expr)
-        else:
-            print("We shouldn't be here")
+        # else:
+            # print("We shouldn't be here")
+
         return tokens
 
     elif tree.node == "s_expr" and tokens[0].type == 'concat':
