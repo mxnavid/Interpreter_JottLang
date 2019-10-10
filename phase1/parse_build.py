@@ -299,13 +299,19 @@ def build_tree(tokens, tree):
         if (tokens[1].type == "+" or tokens[1].type == "-" or tokens[1].type == "*" or tokens[1].type == "/" or \
                         tokens[1].type == "^"):
             tree.expr = tc.I_expr_triple()
-            tree.expr.left = tc.Int()
+            # vvv This stuff will need to be added to multiple elifs, but it's not working properly yet
+            # if len(tokens) > 2 and tokens[2].type == "-":
+            #     tree.expr.left = tc.I_expr_triple()
+            # else:
+            #     tree.expr.left = tc.Int()
+            tree.expr.left = tc.Int() # comment this out when testing the above commented out code
             tokens = build_tree(tokens, tree.expr.left)
             tree.expr.op = tc.Op()
             tokens = build_tree(tokens, tree.expr.op)
             if tokens[1].type == "+" or tokens[1].type == "-" or tokens[1].type == "*" or tokens[1].type == "/" or \
                             tokens[1].type == "^":
                 tree.expr.right = tc.I_expr_triple()
+            # vvvv This elif block is unreachable as far as I can tell, it should be removed
             elif tokens[0].type == "-":
                 if tokens[2].type == "+" or tokens[2].type == "-" or tokens[2].type == "*" or tokens[2].type == "/" or \
                                 tokens[2].type == "^":
