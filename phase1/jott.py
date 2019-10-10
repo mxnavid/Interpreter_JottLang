@@ -11,11 +11,11 @@ def main():
 
     tokens = pb.parser(sys.argv[1])
 
-    if(pb.token_check(tokens)):
-        print("GOOD LANGUAGE")
-        for thing in tokens:
-            print(thing.type)
-        tokens = pb.build_tree(tokens,None)
+    if pb.token_check(tokens):
+        # print("GOOD LANGUAGE")
+        # for thing in tokens:
+        #    print(thing.type)
+        pb.build_tree(tokens, None)
 
 
 if __name__ == "__main__":
