@@ -428,12 +428,12 @@ def parser(file_name):
         if len(line) >= 2 and line[0:2] == "//":  # ignore comments
             continue
         for char in line:
-            if char != " " and char != "\n":
+            if (char != " " and char != "\n") or (state ==14 and char != "\n"):
                 token_i.value += char
             last_state = state
             state = accepts(dfa, state, char)
             if state == "break_b":
-                if char != " " and char != "\n":
+                if (char != " " and char != "\n") or (state ==14 and char != "\n"):
                     token_i.value = token_i.value[:-1]
                     token_i.line = [line_num, line]
                     if last_state == 14:
