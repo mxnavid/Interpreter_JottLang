@@ -246,10 +246,10 @@ class I_expr_triple(I_expr):
         left = self.left.verify()
         right = self.right.verify()
         if self.op.op == "/" and right == 0:
-            print("Runtime Error: Divide by zero")
+            print("Runtime Error: Divide by zero",end =", ")
             return False
         if type(left) != type(right):
-            print("Syntax Error: Type mismatch: Expected " + str(type(left).__name__).upper() + " got " + str(type(right).__name__).upper())
+            print("Syntax Error: Type mismatch: Expected " + str(type(left).__name__).upper() + " got " + str(type(right).__name__).upper(),end =", ")
             return False
         else:
             if self.op.op == "+":
@@ -305,11 +305,11 @@ class D_expr_triple(D_expr):
         left = self.left.verify()
         right = self.right.verify()
         if self.op.op == "/" and right == 0:
-            print("Runtime Error: Divide by zero")
+            print("Runtime Error: Divide by zero",end =", ")
             return False
         if type(left) != type(right):
             print("Syntax Error: Type mismatch: Expected " + str(type(left).__name__).upper() + " got " + str(
-                type(right).__name__).upper())
+                type(right).__name__).upper(),end =", ")
             return False
         else:
             if self.op.op == "+":
@@ -371,9 +371,9 @@ class Dbl:
             return float(self.dbl)
         else:
             if self.sign.child:
-                print("Syntax Error: Type mismatch: Expected Double got: " + str(self.sign.child).upper() + str(self.dbl).upper())
+                print("Syntax Error: Type mismatch: Expected Double got: " + str(self.sign.child).upper() + str(self.dbl).upper(),end =", ")
             else:
-                print("Syntax Error: Type mismatch: Expected Double got: " + str(self.dbl).upper())
+                print("Syntax Error: Type mismatch: Expected Double got: " + str(self.dbl).upper(),end =", ")
             return False
 
     def eval(self):
@@ -397,9 +397,9 @@ class Int:
             return int(self.int)
         except ValueError:
             if self.sign.child:
-                print("Syntax Error: Type mismatch: Expected Integer got: " + str(self.sign.child).upper()  + str(self.int).upper())
+                print("Syntax Error: Type mismatch: Expected Integer got: " + str(self.sign.child).upper()  + str(self.int).upper(),end =", ")
             else:
-                print("Syntax Error: Type mismatch: Expected Integer got: " + str(self.int).upper())
+                print("Syntax Error: Type mismatch: Expected Integer got: " + str(self.int).upper(),end =", ")
             return False
 
     def eval(self):

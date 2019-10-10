@@ -13,7 +13,7 @@ def build_tree(tokens, tree):
         tokens = build_tree(tokens, tree.left)
         print("End of build")
         if verify_code(tree, token_copy):
-            gen_code(tree, token_copy)
+            gen_code(tree)
     elif tree.node == "stmt_list":
         if tokens[0].type != "$$":
             if tokens[0].type == 'concat' or tokens[0].type == 'charat':
