@@ -341,11 +341,13 @@ def build_tree(tokens, tree):
             tree.expr = tc.I_expr_single()
             tokens = build_tree(tokens, tree.expr)
 
-    # TODO: see commented block below. Basically, we need to check for when the first digit in an expression is
-    # negative. All other cases are working. So, things like print(-5) or print(-3.2 * 2.5 - 4) will break.
-    # This will require some touch-up in multiple elifs, this one is just a start. There wasn't a case for
-    # when you're in an expr node and the first token is a negative sign followed by a integer, so I've started
-    # working on adding that below.
+    # TODO: add top-level elif for expr starting with negative number (pretty much done below in commented block)
+    # TODO: add top-level elif for i_expr triple starting with negative number
+    # TODO: add top-level elif for i_expr single starting with negative number
+    # TODO: add top-level elif for d_expr triple starting with negative number
+    # TODO: add top-level elif for i_expr single starting with negative number
+    # TODO: see if any of this stuff needs to be added to variable assignment, etc
+
     # elif tree.node == "expr" and tokens[0].type == "-" and tokens[1].type == "Number" and '.' not in tokens[1].value:
     #     if (tokens[2].type == "+" or tokens[2].type == "-" or tokens[2].type == "*" or tokens[2].type == "/" or \
     #                     tokens[2].type == "^"):
