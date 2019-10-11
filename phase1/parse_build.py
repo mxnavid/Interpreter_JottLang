@@ -311,8 +311,12 @@ def build_tree(tokens, tree):
                 tree.op.op = tokens.pop(last - 2).value
             else:
                 tree.op.op = tokens.pop(last - 1).value
-            if tokens[1].type == "+" or tokens[1].type == "-" or tokens[1].type == "*" or tokens[1].type == "/" or \
-                            tokens[1].type == "^":
+            #  pay no attention to these disgusting if statements
+            if (tokens[0].type == "Number" and (tokens[1].type == "+" or tokens[1].type == "-" or \
+                        tokens[1].type == "*" or tokens[1].type == "/" or tokens[1].type == "^")) or \
+                        ((tokens[0].type == "-" and tokens[1].type == "Number") and (tokens[2].type == "+" \
+                        or tokens[2].type == "-" or tokens[2].type == "*" or tokens[2].type == "^" \
+                        or tokens[2].type == "/")):
                 tree.left = tc.I_expr_triple()
             else:
                 tree.left = tc.Int()
@@ -340,8 +344,11 @@ def build_tree(tokens, tree):
                 tree.op.op = tokens.pop(last - 2).value
             else:
                 tree.op.op = tokens.pop(last - 1).value
-            if tokens[1].type == "+" or tokens[1].type == "-" or tokens[1].type == "*" or tokens[1].type == "/" or \
-                            tokens[1].type == "^":
+            if (tokens[0].type == "Number" and (tokens[1].type == "+" or tokens[1].type == "-" or \
+                        tokens[1].type == "*" or tokens[1].type == "/" or tokens[1].type == "^")) or \
+                        ((tokens[0].type == "-" and tokens[1].type == "Number") and (tokens[2].type == "+" \
+                        or tokens[2].type == "-" or tokens[2].type == "*" or tokens[2].type == "^" \
+                        or tokens[2].type == "/")):
                 tree.left = tc.D_expr_triple()
             else:
                 tree.left = tc.Dbl()
@@ -374,13 +381,6 @@ def build_tree(tokens, tree):
             tree.expr = tc.I_expr_single()
             tokens = build_tree(tokens, tree.expr)
 
-    # TODO: add top-level elif for expr starting with negative number (pretty much done below in commented block)
-    # TODO: add top-level elif for i_expr triple starting with negative number
-    # TODO: add top-level elif for i_expr single starting with negative number
-    # TODO: add top-level elif for d_expr triple starting with negative number
-    # TODO: add top-level elif for i_expr single starting with negative number
-    # TODO: see if any of this stuff needs to be added to variable assignment, etc
-
     elif tree.node == "expr" and tokens[0].type == "-" and tokens[1].type == "Number" and '.' not in tokens[1].value:
         if (tokens[2].type == "+" or tokens[2].type == "-" or tokens[2].type == "*" or tokens[2].type == "/" or \
                         tokens[2].type == "^"):
@@ -396,8 +396,8 @@ def build_tree(tokens, tree):
                 tree.expr.op.op = tokens.pop(last - 2).value
             else:
                 tree.expr.op.op = tokens.pop(last - 1).value
-            if tokens[1].type == "+" or tokens[1].type == "-" or tokens[1].type == "*" or tokens[1].type == "/" or \
-                            tokens[1].type == "^":
+            if tokens[2].type == "+" or tokens[2].type == "-" or tokens[2].type == "*" or tokens[2].type == "/" or \
+                            tokens[2].type == "^":
                 tree.expr.left = tc.I_expr_triple()
             else:
                 tree.expr.left = tc.Int()
@@ -447,8 +447,8 @@ def build_tree(tokens, tree):
                 tree.expr.op.op = tokens.pop(last - 2).value
             else:
                 tree.expr.op.op = tokens.pop(last - 1).value
-            if tokens[1].type == "+" or tokens[1].type == "-" or tokens[1].type == "*" or tokens[1].type == "/" or \
-                            tokens[1].type == "^":
+            if tokens[2].type == "+" or tokens[2].type == "-" or tokens[2].type == "*" or tokens[2].type == "/" or \
+                            tokens[2].type == "^":
                 tree.expr.left = tc.D_expr_triple()
             else:
                 tree.expr.left = tc.Dbl()
