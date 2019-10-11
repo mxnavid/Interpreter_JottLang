@@ -1,5 +1,6 @@
 # parses file and builds tree
 import re
+import sys
 from constants import dfa, term_tokens, follows
 import token_classes as tc
 from code_gen import gen_code, verify_code
@@ -144,7 +145,12 @@ def build_tree(tokens, tree):
         tokens = tokens[1:]
         tokens = build_tree(tokens, tree.expr.start)
         tokens = build_tree(tokens, tree.expr.expr1)
-        tokens = tokens[1:]
+        if(tokens[0].value != ","):
+            print("Syntax Error: Expected , got " + str(tokens[0].value) + ", \""+tokens[0].line[1]+"\" Line: " + str(tokens[0].line[0]))
+            sys.exit()
+
+        else:
+            tokens = tokens[1:]
         tokens = build_tree(tokens, tree.expr.expr2)
         tokens = build_tree(tokens, tree.expr.stop)
         return tokens
@@ -237,19 +243,41 @@ def build_tree(tokens, tree):
         tokens = tokens[1:]
         tokens = build_tree(tokens, tree.expr.start)
         tokens = build_tree(tokens, tree.expr.expr1)
-        tokens = tokens[1:]
+        if(tokens[0].value != ","):
+            print("Syntax Error: Expected , got " + str(tokens[0].value) + ", \""+tokens[0].line[1]+"\" Line: " + str(tokens[0].line[0]))
+            sys.exit()
+
+
+        else:
+            tokens = tokens[1:]
         tokens = build_tree(tokens, tree.expr.expr2)
         tokens = build_tree(tokens, tree.expr.stop)
         return tokens
 
-    elif tree.node == "start_paren" and tokens[0].type == "(":
-        return tokens[1:]
+    elif tree.node == "start_paren" :
+        if tokens[0].type == "(":
+            return tokens[1:]
+        else:
+            print("Syntax Error: Expected ( got " + str(tokens[0].value) + ", \""+tokens[0].line[1]+"\" Line: " + str(tokens[0].line[0]))
+            sys.exit()
 
-    elif tree.node == "end_paren" and tokens[0].type == ")":
-        return tokens[1:]
 
-    elif tree.node == "end_stmt" and tokens[0].type == ";":
-        return tokens[1:]
+
+    elif tree.node == "end_paren":
+        if tokens[0].type == ")":
+            return tokens[1:]
+        else:
+            print("Syntax Error: Expected ) got " + str(tokens[0].value) + ", \""+tokens[0].line[1]+"\" Line: " + str(tokens[0].line[0]))
+            sys.exit()
+
+
+    elif tree.node == "end_stmt":
+        if tokens[0].type == ";":
+            return tokens[1:]
+        else:
+            print("Syntax Error: Expected ; got " + str(tokens[0].value) + ", \""+tokens[0].line[1]+"\" Line: " + str(tokens[0].line[0]))
+            sys.exit()
+
 
     elif tree.node == "op" and (tokens[0].type == "+" or tokens[0].type == "-" or tokens[0].type == "*" or
                                         tokens[0].type == "/" or tokens[0].type == "^"):
@@ -491,7 +519,8 @@ def parser(file_name):
                     token_i.value = token_i.value[:-1]
                     token_i.line = [line_num, line]
                     if last_state == 14:
-                        print(line)
+                        print("Syntax Error: Missing \", \"" + token_i.line[1] + "\" Line: " + str(token_i.line[0]))
+                        return False
                     if token_i.value == "Integer" or token_i.value == "Double" or token_i.value == "String" \
                             or token_i.value == "print" or token_i.value == "concat" or token_i.value == "charAt":
                         token_i.type = token_i.value
