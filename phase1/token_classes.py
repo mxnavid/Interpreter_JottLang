@@ -39,7 +39,7 @@ class Stmt:
         self.left = None
         self.right = None
     def verify(self):
-        self.left.verify()
+        return self.left.verify()
     def eval(self):
         self.left.eval()
 

@@ -17,7 +17,7 @@ def build_tree(tokens, tree):
             gen_code(tree)
     elif tree.node == "stmt_list":
         if tokens[0].type != "$$":
-            if tokens[0].type == 'concat' or tokens[0].type == 'charat':
+            if tokens[0].type == 'concat' or tokens[0].type == 'charAt':
                 tree.left = tc.Stmt()
                 tokens = build_tree(tokens, tree.left)
 
