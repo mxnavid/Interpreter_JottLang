@@ -245,7 +245,7 @@ class I_expr_triple(I_expr):
     def verify(self):
         left = self.left.verify()
         right = self.right.verify()
-        if right:
+        if right != "-":
             if self.op.op == "/" and right == 0:
                 print("Runtime Error: Divide by zero",end =", ")
                 return False
@@ -306,7 +306,7 @@ class D_expr_triple(D_expr):
     def verify(self):
         left = self.left.verify()
         right = self.right.verify()
-        if right:
+        if right != "-":
             if self.op.op == "/" and right == 0:
                 print("Runtime Error: Divide by zero",end =", ")
                 return False
@@ -386,7 +386,7 @@ class Dbl:
             except ValueError:
                 print("Syntax Error: Type mismatch: Expected Float got: String",end =", ")
 
-            return False
+            return "-"
     def eval(self):
         if self.sign.child == "-":
             return float(self.dbl) * -1
@@ -411,7 +411,7 @@ class Int:
                 print("Syntax Error: Type mismatch: Expected Integer got: Float",end =", ")
             else:
                 print("Syntax Error: Type mismatch: Expected Integer got: String",end =", ")
-            return False
+            return "-"
 
     def eval(self):
         if self.sign.child == "-":
