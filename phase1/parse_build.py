@@ -275,13 +275,17 @@ def build_tree(tokens, tree):
             tree.right = tc.Int()
             tree.right.int = tokens.pop(last).value
             tree.op = tc.Op()
-            tree.op.op = tokens.pop(last - 1).value
+            if tokens[last-1].value == "-" and (tokens[last-2].value == "+" or tokens[last-2].value == "-" or \
+                    tokens[last-2].value == "/" or tokens[last-2].value == "*" or tokens[last-2].value == "^"):
+                tree.right.sign.child = tokens.pop(last-1).value
+                tree.op.op = tokens.pop(last - 2).value
+            else:
+                tree.op.op = tokens.pop(last - 1).value
             if tokens[1].type == "+" or tokens[1].type == "-" or tokens[1].type == "*" or tokens[1].type == "/" or \
                             tokens[1].type == "^":
                 tree.left = tc.I_expr_triple()
             else:
                 tree.left = tc.Int()
-            # tree.expr.left = tc.Int() # comment this out when testing the above commented out code
             tokens = build_tree(tokens, tree.left)
 
         return tokens
@@ -296,7 +300,13 @@ def build_tree(tokens, tree):
             tree.right = tc.Dbl()
             tree.right.dbl = tokens.pop(last).value
             tree.op = tc.Op()
-            tree.op.op = tokens.pop(last - 1).value
+            if tokens[last - 1].value == "-" and (tokens[last - 2].value == "+" or tokens[last - 2].value == "-" or
+                                                  tokens[last - 2].value == "/" or tokens[last - 2].value == "*" or
+                                                  tokens[last - 2].value == "^"):
+                tree.right.sign.child = tokens.pop(last - 1).value
+                tree.op.op = tokens.pop(last - 2).value
+            else:
+                tree.op.op = tokens.pop(last - 1).value
             if tokens[1].type == "+" or tokens[1].type == "-" or tokens[1].type == "*" or tokens[1].type == "/" or \
                             tokens[1].type == "^":
                 tree.left = tc.D_expr_triple()
@@ -310,11 +320,17 @@ def build_tree(tokens, tree):
         if (tokens[1].type == "+" or tokens[1].type == "-" or tokens[1].type == "*" or tokens[1].type == "/" or \
                         tokens[1].type == "^"):
             tree.expr = tc.I_expr_triple()
-            last = next(i for i,v in enumerate(tokens) if (v.type== ")" or v.type==";"))-1
+            last = next(i for i, v in enumerate(tokens) if (v.type == ")" or v.type == ";")) - 1
             tree.expr.right = tc.Int()
-            tree.expr.op = tc.Op()
             tree.expr.right.int = tokens.pop(last).value
-            tree.expr.op.op = tokens.pop(last-1).value
+            tree.expr.op = tc.Op()
+            if tokens[last - 1].value == "-" and (tokens[last - 2].value == "+" or tokens[last - 2].value == "-" or
+                                                  tokens[last - 2].value == "/" or tokens[last - 2].value == "*" or
+                                                  tokens[last - 2].value == "^"):
+                tree.expr.right.sign.child = tokens.pop(last - 1).value
+                tree.expr.op.op = tokens.pop(last - 2).value
+            else:
+                tree.expr.op.op = tokens.pop(last - 1).value
             if tokens[1].type == "+" or tokens[1].type == "-" or tokens[1].type == "*" or tokens[1].type == "/" or \
                             tokens[1].type == "^":
                 tree.expr.left = tc.I_expr_triple()
@@ -325,15 +341,51 @@ def build_tree(tokens, tree):
             tree.expr = tc.I_expr_single()
             tokens = build_tree(tokens, tree.expr)
 
+    # TODO: see commented block below. Basically, we need to check for when the first digit in an expression is
+    # negative. All other cases are working. So, things like print(-5) or print(-3.2 * 2.5 - 4) will break.
+    # This will require some touch-up in multiple elifs, this one is just a start. There wasn't a case for
+    # when you're in an expr node and the first token is a negative sign followed by a integer, so I've started
+    # working on adding that below.
+    # elif tree.node == "expr" and tokens[0].type == "-" and tokens[1].type == "Number" and '.' not in tokens[1].value:
+    #     if (tokens[2].type == "+" or tokens[2].type == "-" or tokens[2].type == "*" or tokens[2].type == "/" or \
+    #                     tokens[2].type == "^"):
+    #         tree.expr = tc.I_expr_triple()
+    #         last = next(i for i, v in enumerate(tokens) if (v.type == ")" or v.type == ";")) - 1
+    #         tree.expr.right = tc.Int()
+    #         tree.expr.right.int = tokens.pop(last).value
+    #         tree.expr.op = tc.Op()
+    #         if tokens[last - 1].value == "-" and (tokens[last - 2].value == "+" or tokens[last - 2].value == "-" or
+    #                                               tokens[last - 2].value == "/" or tokens[last - 2].value == "*" or
+    #                                               tokens[last - 2].value == "^"):
+    #             tree.expr.right.sign.child = tokens.pop(last - 1).value
+    #             tree.expr.op.op = tokens.pop(last - 2).value
+    #         else:
+    #             tree.expr.op.op = tokens.pop(last - 1).value
+    #         if tokens[1].type == "+" or tokens[1].type == "-" or tokens[1].type == "*" or tokens[1].type == "/" or \
+    #                         tokens[1].type == "^":
+    #             tree.expr.left = tc.I_expr_triple()
+    #         else:
+    #             tree.expr.left = tc.Int()
+    #         tokens = build_tree(tokens, tree.expr.left)
+    #     else:
+    #         tree.expr = tc.I_expr_single()
+    #         tokens = build_tree(tokens, tree.expr)
+
     elif tree.node == "expr" and tokens[0].type == "Number" and '.' in tokens[0].value:
         if tokens[1].type == "+" or tokens[1].type == "-" or tokens[1].type == "*" or tokens[1].type == "/" or \
                         tokens[1].type == "^":
             tree.expr = tc.D_expr_triple()
-            last = next(i for i,v in enumerate(tokens) if (v.type== ")" or v.type==";"))-1
+            last = next(i for i, v in enumerate(tokens) if (v.type == ")" or v.type == ";")) - 1
             tree.expr.right = tc.Dbl()
-            tree.expr.op = tc.Op()
             tree.expr.right.dbl = tokens.pop(last).value
-            tree.expr.op.op = tokens.pop(last-1).value
+            tree.expr.op = tc.Op()
+            if tokens[last - 1].value == "-" and (tokens[last - 2].value == "+" or tokens[last - 2].value == "-" or
+                                                  tokens[last - 2].value == "/" or tokens[last - 2].value == "*" or
+                                                  tokens[last - 2].value == "^"):
+                tree.expr.right.sign.child = tokens.pop(last - 1).value
+                tree.expr.op.op = tokens.pop(last - 2).value
+            else:
+                tree.expr.op.op = tokens.pop(last - 1).value
             if tokens[1].type == "+" or tokens[1].type == "-" or tokens[1].type == "*" or tokens[1].type == "/" or \
                             tokens[1].type == "^":
                 tree.expr.left = tc.D_expr_triple()
