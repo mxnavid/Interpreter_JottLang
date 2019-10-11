@@ -569,6 +569,8 @@ def parser(file_name):
     token_i.line = [line_num, line]
     token_i.type = "$$"
     tokens.append(token_i)
+    global token_copy
+    token_copy = tokens
     return tokens
 
 

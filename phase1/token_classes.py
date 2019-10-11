@@ -245,24 +245,26 @@ class I_expr_triple(I_expr):
     def verify(self):
         left = self.left.verify()
         right = self.right.verify()
-        if self.op.op == "/" and right == 0:
-            print("Runtime Error: Divide by zero",end =", ")
-            return False
-        if type(left) != type(right):
-            print("Syntax Error: Type mismatch: Expected " + str(type(left).__name__).upper() + " got " + str(type(right).__name__).upper(),end =", ")
-            return False
+        if right:
+            if self.op.op == "/" and right == 0:
+                print("Runtime Error: Divide by zero",end =", ")
+                return False
+            if type(left) != type(right):
+                print("Syntax Error: Type mismatch: Expected " + str(type(left).__name__).upper() + " got " + str(type(right).__name__).upper(),end =", ")
+                return False
+            else:
+                if self.op.op == "+":
+                    return left + right
+                elif self.op.op == "-":
+                    return left - right
+                elif self.op.op == "*":
+                    return left * right
+                elif self.op.op == "/":
+                    return left // right  # floor division
+                else:  # op == ^
+                    return left ** right
         else:
-            if self.op.op == "+":
-                return left + right
-            elif self.op.op == "-":
-                return left - right
-            elif self.op.op == "*":
-                return left * right
-            elif self.op.op == "/":
-                return left // right  # floor division
-            else:  # op == ^
-                return left ** right
-
+            return False
     def eval(self):
         left = self.left.eval()
         right = self.right.eval()
@@ -304,24 +306,27 @@ class D_expr_triple(D_expr):
     def verify(self):
         left = self.left.verify()
         right = self.right.verify()
-        if self.op.op == "/" and right == 0:
-            print("Runtime Error: Divide by zero",end =", ")
-            return False
-        if type(left) != type(right):
-            print("Syntax Error: Type mismatch: Expected " + str(type(left).__name__).upper() + " got " + str(
-                type(right).__name__).upper(),end =", ")
-            return False
+        if right:
+            if self.op.op == "/" and right == 0:
+                print("Runtime Error: Divide by zero",end =", ")
+                return False
+            if type(left) != type(right):
+                print("Syntax Error: Type mismatch: Expected " + str(type(left).__name__).upper() + " got " + str(
+                    type(right).__name__).upper(),end =", ")
+                return False
+            else:
+                if self.op.op == "+":
+                    return left + right
+                elif self.op.op == "-":
+                    return left - right
+                elif self.op.op == "*":
+                    return left * right
+                elif self.op.op == "/":
+                    return left // right  # floor division
+                else:  # op == ^
+                    return left ** right
         else:
-            if self.op.op == "+":
-                return left + right
-            elif self.op.op == "-":
-                return left - right
-            elif self.op.op == "*":
-                return left * right
-            elif self.op.op == "/":
-                return left // right  # floor division
-            else:  # op == ^
-                return left ** right
+            return False
 
     def eval(self):
         left = self.left.eval()
@@ -364,18 +369,24 @@ class Dbl:
         self.node = "dbl"
         self.sign = Sign()
         self.dbl = None
-    def verify(self):
-        if "." in self.dbl:
-            if self.sign.child == "-":
-                return float(self.dbl) * -1
-            return float(self.dbl)
-        else:
-            if self.sign.child:
-                print("Syntax Error: Type mismatch: Expected Double got: " + str(self.sign.child).upper() + str(self.dbl).upper(),end =", ")
-            else:
-                print("Syntax Error: Type mismatch: Expected Double got: " + str(self.dbl).upper(),end =", ")
-            return False
 
+    def verify(self):
+
+        try:
+            if "." in self.dbl:
+                if self.sign.child == "-":
+                    return float(self.dbl) * -1
+                return float(self.dbl)
+            else:
+                raise ValueError
+        except ValueError:
+            try:
+                temp = int(self.dbl)
+                print("Syntax Error: Type mismatch: Expected Float got: Integer", end=", ")
+            except ValueError:
+                print("Syntax Error: Type mismatch: Expected Float got: String",end =", ")
+
+            return False
     def eval(self):
         if self.sign.child == "-":
             return float(self.dbl) * -1
@@ -396,10 +407,10 @@ class Int:
                 return int(self.int) * -1
             return int(self.int)
         except ValueError:
-            if self.sign.child:
-                print("Syntax Error: Type mismatch: Expected Integer got: " + str(self.sign.child).upper()  + str(self.int).upper(),end =", ")
+            if "." in self.int:
+                print("Syntax Error: Type mismatch: Expected Integer got: Float",end =", ")
             else:
-                print("Syntax Error: Type mismatch: Expected Integer got: " + str(self.int).upper(),end =", ")
+                print("Syntax Error: Type mismatch: Expected Integer got: String",end =", ")
             return False
 
     def eval(self):
