@@ -1,7 +1,7 @@
 # parses file and builds tree
 import re
 import sys
-from constants import dfa, term_tokens, follows
+from constants import dfa, term_tokens
 import token_classes as tc
 from code_gen import gen_code, verify_code
 variables = {}
@@ -590,20 +590,3 @@ def parser(file_name):
     global token_copy
     token_copy = tokens
     return tokens
-
-
-def token_check(tokens):
-    global token_copy
-    past_token = None
-    for token in tokens:
-        if past_token:
-            if not (token.type in follows[past_token]):
-                print("INVALID LANGUAGE")
-                print("LINE: " + str(token.line[0]))
-                print(token.line[1])
-                print(token.type)
-                print(follows[past_token])
-                return 0
-        past_token = token.type
-    token_copy = tokens
-    return 1
