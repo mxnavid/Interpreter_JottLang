@@ -13,10 +13,6 @@ def main():
     if tokens:
         pb.build_tree(tokens, None)
 
-        # print("GOOD LANGUAGE")
-            # for thing in tokens:
-            #    print(thing.type)
-
 
 if __name__ == "__main__":
     main()
