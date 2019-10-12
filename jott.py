@@ -2,7 +2,7 @@
 
 import sys
 
-from Code.plc_project import parse_build as pb
+import parse_build as pb
 
 
 def main():
