@@ -1,9 +1,12 @@
 # parses file and builds tree
 import re
 import sys
-from constants import dfa, term_tokens
-import token_classes as tc
+
 from code_gen import gen_code, verify_code
+from constants import dfa, term_tokens
+
+from Code.plc_project import token_classes as tc
+
 variables = {}
 token_copy = {}
 

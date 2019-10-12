@@ -1,7 +1,8 @@
 # main driver file for jott compiler
 
 import sys
-import parse_build as pb
+
+from Code.plc_project import parse_build as pb
 
 
 def main():
