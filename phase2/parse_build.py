@@ -357,8 +357,8 @@ def build_tree(tokens, tree):
         return tokens
 
     elif tree.node == "expr" and tokens[0].type == "Number" and '.' not in tokens[0].value:
-        if (tokens[1].type == "+" or tokens[1].type == "-" or tokens[1].type == "*" or tokens[1].type == "/" or \
-                        tokens[1].type == "^"):
+        if (tokens[1].type == "+" or tokens[1].type == "-" or tokens[1].type == "*" or tokens[1].type == "/" or
+                        tokens[1].type == "^" or tokens[1].type == ">" or tokens[1].type == "<"):
             tree.expr = tc.I_expr_triple()
             last = next(i for i, v in enumerate(tokens) if (v.type == ")" or v.type == ";")) - 1
             tree.expr.right = tc.Int()
@@ -366,7 +366,8 @@ def build_tree(tokens, tree):
             tree.expr.op = tc.Op()
             if tokens[last - 1].value == "-" and (tokens[last - 2].value == "+" or tokens[last - 2].value == "-" or
                                                   tokens[last - 2].value == "/" or tokens[last - 2].value == "*" or
-                                                  tokens[last - 2].value == "^"):
+                                                  tokens[last - 2].value == "^" or tokens[last-2].type == ">" or
+                                                  tokens[last-2].type == "<"):
                 tree.expr.right.sign.child = tokens.pop(last - 1).value
                 tree.expr.op.op = tokens.pop(last - 2).value
             else:

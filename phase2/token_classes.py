@@ -1,7 +1,6 @@
 # token classes
 variables = {}
 
-
 class Token:
     def __init__(self):
         self.type = ""
@@ -14,7 +13,6 @@ class Program:
         self.node = "program"
         self.left = Stmt_list()
         self.right = "$$"
-
     def verify(self):
         return self.left.verify()
 
@@ -27,11 +25,9 @@ class Stmt_list:
         self.node = "stmt_list"
         self.left = None
         self.right = None
-
     def verify(self):
         if self.left and self.right:
             return self.left.verify()
-
     def eval(self):
         if self.left and self.right:
             return self.left.eval()
@@ -42,10 +38,8 @@ class Stmt:
         self.node = "stmt"
         self.left = None
         self.right = None
-
     def verify(self):
         return self.left.verify()
-
     def eval(self):
         self.left.eval()
 
@@ -54,7 +48,6 @@ class Stmt_single:
     def __init__(self):
         self.node = "stmt"
         self.child = None
-
     def verify(self):
         return self.child.verify()
 
@@ -114,13 +107,17 @@ class Sign:
     def __init__(self):
         self.node = "sign"
         self.child = None
-
     def verify(self):
         return self.child.verify()
-
     def eval(self):
         return self.child.eval()
-
+"""
+class Id:
+    def __init__(self):
+        self.node = "id"
+        self.left = L_char()
+        self.right = [str(),None]
+"""
 
 class Print:
     def __init__(self):
@@ -130,13 +127,11 @@ class Print:
         self.expr = Expr()
         self.stop = End_paren()
         self.end = End_stmt()
-
     def verify(self):
         return self.expr.verify()
 
     def eval(self):
         print(self.expr.eval())
-
 
 class S_Expr_Concat:
     def __init__(self):
@@ -153,6 +148,8 @@ class S_Expr_Concat:
 
     def eval(self):
         return self.expr1.eval()+self.expr2.eval()
+
+
 
 
 class S_Expr_CharAt:
@@ -175,7 +172,6 @@ class S_Expr_CharAt:
         given_string = str(self.expr1.eval())
         return given_string[pos]
 
-
 class Asmt:
     def __init__(self):
         self.node = "asmt"
@@ -193,7 +189,7 @@ class Asmt:
         return True
 
     def eval(self):
-        variables[self.id.eval()] = self.expr.eval()
+        variables[self.id.eval()] =  self.expr.eval()
 
 class Id:
     def __init__(self):
@@ -212,10 +208,10 @@ class Id:
         else:
             return self.child
 
-
 class Expr:
     def __init__(self):
         self.node = "expr"
+        #self.expr = [i_expr(),d_expr(),s_expr(),id()]
         self.expr = None
 
     def verify(self):
@@ -223,7 +219,6 @@ class Expr:
 
     def eval(self):
         return self.expr.eval()
-
 
 class I_expr:
     def __init__(self):
@@ -234,13 +229,11 @@ class I_expr_single(I_expr):
     def __init__(self):
         super().__init__()
         self.child = None
-
     def verify(self):
         return self.child.verify()
 
     def eval(self):
         return self.child.eval()
-
 
 class I_expr_triple(I_expr):
     def __init__(self):
@@ -254,11 +247,10 @@ class I_expr_triple(I_expr):
         right = self.right.verify()
         if right != "-":
             if self.op.op == "/" and right == 0:
-                print("Runtime Error: Divide by zero", end=", ")
+                print("Runtime Error: Divide by zero",end =", ")
                 return False
             if type(left) != type(right):
-                print("Syntax Error: Type mismatch: Expected " + str(type(left).__name__).upper() +
-                      " got " + str(type(right).__name__).upper(), end=", ")
+                print("Syntax Error: Type mismatch: Expected " + str(type(left).__name__).upper() + " got " + str(type(right).__name__).upper(),end =", ")
                 return False
             else:
                 if self.op.op == "+":
@@ -269,11 +261,20 @@ class I_expr_triple(I_expr):
                     return left * right
                 elif self.op.op == "/":
                     return left // right  # floor division
+                elif self.op.op == ">":
+                    if left > right:
+                        return 1
+                    else:
+                        return 0
+                elif self.op.op == "<":
+                    if left < right:
+                        return 1
+                    else:
+                        return 0
                 else:  # op == ^
                     return left ** right
         else:
             return False
-
     def eval(self):
         left = self.left.eval()
         right = self.right.eval()
@@ -286,9 +287,18 @@ class I_expr_triple(I_expr):
             return left * right
         elif self.op.op == "/":
             return left // right  # floor division
+        elif self.op.op == ">":
+            if left > right:
+                return 1
+            else:
+                return 0
+        elif self.op.op == "<":
+            if left < right:
+                return 1
+            else:
+                return 0
         else:  # op == ^
             return left ** right
-
 
 class D_expr:
     def __init__(self):
@@ -306,7 +316,6 @@ class D_expr_single(D_expr):
     def eval(self):
         return self.child.eval()
 
-
 class D_expr_triple(D_expr):
     def __init__(self):
         super().__init__()
@@ -319,11 +328,11 @@ class D_expr_triple(D_expr):
         right = self.right.verify()
         if right != "-":
             if self.op.op == "/" and right == 0:
-                print("Runtime Error: Divide by zero", end=", ")
+                print("Runtime Error: Divide by zero",end =", ")
                 return False
             if type(left) != type(right):
                 print("Syntax Error: Type mismatch: Expected " + str(type(left).__name__).upper() + " got " + str(
-                    type(right).__name__).upper(), end=", ")
+                    type(right).__name__).upper(),end =", ")
                 return False
             else:
                 if self.op.op == "+":
@@ -334,6 +343,16 @@ class D_expr_triple(D_expr):
                     return left * right
                 elif self.op.op == "/":
                     return left // right  # floor division
+                elif self.op.op == ">":
+                    if left > right:
+                        return 1
+                    else:
+                        return 0
+                elif self.op.op == "<":
+                    if left < right:
+                        return 1
+                    else:
+                        return 0
                 else:  # op == ^
                     return left ** right
         else:
@@ -351,6 +370,16 @@ class D_expr_triple(D_expr):
             return left * right
         elif self.op.op == "/":
             return left / right
+        elif self.op.op == ">":
+            if left > right:
+                return 1
+            else:
+                return 0
+        elif self.op.op == "<":
+            if left < right:
+                return 1
+            else:
+                return 0
         else:  # op == ^
             return left ** right
 
@@ -366,7 +395,6 @@ class S_expr:
     def eval(self):
         return self.child.eval()
 
-
 class Op:
     def __init__(self):
         self.node = "op"
@@ -375,8 +403,8 @@ class Op:
     def eval(self):
         return self.op.eval()
 
-
 class Dbl:
+    #WIP
     def __init__(self):
         self.node = "dbl"
         self.sign = Sign()
@@ -399,7 +427,6 @@ class Dbl:
                 print("Syntax Error: Type mismatch: Expected Float got: String",end =", ")
 
             return "-"
-
     def eval(self):
         if self.sign.child == "-":
             return float(self.dbl) * -1
@@ -407,6 +434,7 @@ class Dbl:
 
 
 class Int:
+    #WIP
     def __init__(self):
         self.node = "int"
         self.sign = Sign()
@@ -420,9 +448,9 @@ class Int:
             return int(self.int)
         except ValueError:
             if "." in self.int:
-                print("Syntax Error: Type mismatch: Expected Integer got: Float", end=", ")
+                print("Syntax Error: Type mismatch: Expected Integer got: Float",end =", ")
             else:
-                print("Syntax Error: Type mismatch: Expected Integer got: String", end=", ")
+                print("Syntax Error: Type mismatch: Expected Integer got: String",end =", ")
             return "-"
 
     def eval(self):
@@ -432,6 +460,7 @@ class Int:
 
 
 class Str:
+    #WIP
     def __init__(self):
         self.node = "str"
         self.str = [Char(), Space(), str(), None]
@@ -441,12 +470,13 @@ class Str:
 
 
 class Str_literal:
+    #WIP
     def __init__(self):
         self.node = "str_literal"
         self.child = None
 
     def verify(self):
-        return self.child.replace("\"", "")
+        return self.child.replace("\"","")
 
     def eval(self):
-        return self.child.replace("\"", "")
+        return self.child.replace("\"","")
