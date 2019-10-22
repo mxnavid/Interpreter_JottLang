@@ -253,26 +253,12 @@ class I_expr_triple(I_expr):
                 print("Syntax Error: Type mismatch: Expected " + str(type(left).__name__).upper() + " got " + str(type(right).__name__).upper(),end =", ")
                 return False
             else:
-                if self.op.op == "+":
-                    return left + right
-                elif self.op.op == "-":
-                    return left - right
-                elif self.op.op == "*":
-                    return left * right
-                elif self.op.op == "/":
-                    return left // right  # floor division
-                elif self.op.op == ">":
-                    if left > right:
-                        return 1
-                    else:
-                        return 0
-                elif self.op.op == "<":
-                    if left < right:
-                        return 1
-                    else:
-                        return 0
-                else:  # op == ^
-                    return left ** right
+                if self.op.op == "+" or self.op.op == "-" or self.op.op == "*" \
+                        or self.op.op == "/" or self.op.op == ">" or self.op.op == "<" or self.op.op == "^":
+                    return True
+                else:
+                    print("Syntax Error: Invalid math operator");
+                    return False
         else:
             return False
     def eval(self):
@@ -335,26 +321,12 @@ class D_expr_triple(D_expr):
                     type(right).__name__).upper(),end =", ")
                 return False
             else:
-                if self.op.op == "+":
-                    return left + right
-                elif self.op.op == "-":
-                    return left - right
-                elif self.op.op == "*":
-                    return left * right
-                elif self.op.op == "/":
-                    return left // right  # floor division
-                elif self.op.op == ">":
-                    if left > right:
-                        return 1
-                    else:
-                        return 0
-                elif self.op.op == "<":
-                    if left < right:
-                        return 1
-                    else:
-                        return 0
-                else:  # op == ^
-                    return left ** right
+                if self.op.op == "+" or self.op.op == "-" or self.op.op == "*" \
+                        or self.op.op == "/" or self.op.op == ">" or self.op.op == "<" or self.op.op == "^":
+                    return True
+                else:
+                    print("Syntax Error: Invalid math operator");
+                    return False
         else:
             return False
 
