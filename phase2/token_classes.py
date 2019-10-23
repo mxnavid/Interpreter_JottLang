@@ -253,12 +253,26 @@ class I_expr_triple(I_expr):
                 print("Syntax Error: Type mismatch: Expected " + str(type(left).__name__).upper() + " got " + str(type(right).__name__).upper(),end =", ")
                 return False
             else:
-                if self.op.op == "+" or self.op.op == "-" or self.op.op == "*" \
-                        or self.op.op == "/" or self.op.op == ">" or self.op.op == "<" or self.op.op == "^":
-                    return True
-                else:
-                    print("Syntax Error: Invalid math operator");
-                    return False
+                if self.op.op == "+":
+                    return left + right
+                elif self.op.op == "-":
+                    return left - right
+                elif self.op.op == "*":
+                    return left * right
+                elif self.op.op == "/":
+                    return left // right  # floor division
+                elif self.op.op == ">":
+                    if left > right:
+                        return "true"
+                    else:
+                        return "false"
+                elif self.op.op == "<":
+                    if left < right:
+                        return "true"
+                    else:
+                        return "false"
+                else:  # op == ^
+                    return left ** right
         else:
             return False
     def eval(self):
@@ -321,12 +335,26 @@ class D_expr_triple(D_expr):
                     type(right).__name__).upper(),end =", ")
                 return False
             else:
-                if self.op.op == "+" or self.op.op == "-" or self.op.op == "*" \
-                        or self.op.op == "/" or self.op.op == ">" or self.op.op == "<" or self.op.op == "^":
-                    return True
-                else:
-                    print("Syntax Error: Invalid math operator");
-                    return False
+                if self.op.op == "+":
+                    return left + right
+                elif self.op.op == "-":
+                    return left - right
+                elif self.op.op == "*":
+                    return left * right
+                elif self.op.op == "/":
+                    return left // right  # floor division
+                elif self.op.op == ">":
+                    if left > right:
+                        return "true"
+                    else:
+                        return "false"
+                elif self.op.op == "<":
+                    if left < right:
+                        return "true"
+                    else:
+                        return "false"
+                else:  # op == ^
+                    return left ** right
         else:
             return False
 
