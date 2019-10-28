@@ -402,34 +402,34 @@ class D_expr_triple(D_expr):
                     return left // right  # floor division
                 elif self.op.op == ">":
                     if left > right:
-                        return 1
+                        return 1.0
                     else:
-                        return 0
+                        return 0.0
                 elif self.op.op == "<":
                     if left < right:
-                        return 1
+                        return 1.0
                     else:
-                        return 0
+                        return 0.0
                 elif self.op.op == "<=":
                     if left <= right:
-                        return 1
+                        return 1.0
                     else:
-                        return 0
+                        return 0.0
                 elif self.op.op == ">=":
                     if left >= right:
-                        return 1
+                        return 1.0
                     else:
-                        return 0
+                        return 0.0
                 elif self.op.op == "!=":
                     if left != right:
-                        return 1
+                        return 1.0
                     else:
-                        return 0
+                        return 0.0
                 elif self.op.op == "==":
                     if left == right:
-                        return 1
+                        return 1.0
                     else:
-                        return 0
+                        return 0.0
                 else:  # op == ^
                     return left ** right
         else:
