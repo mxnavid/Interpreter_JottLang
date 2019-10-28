@@ -279,34 +279,34 @@ class I_expr_triple(I_expr):
                     return left // right  # floor division
                 elif self.op.op == ">":
                     if left > right:
-                        return "true"
+                        return 1
                     else:
-                        return "false"
+                        return 0
                 elif self.op.op == "<":
                     if left < right:
-                        return "true"
+                        return 1
                     else:
-                        return "false"
+                        return 0
                 elif self.op.op == "<=":
                     if left <= right:
-                        return "true"
+                        return 1
                     else:
-                        return "false"
+                        return 0
                 elif self.op.op == ">=":
                     if left >= right:
-                        return "true"
+                        return 1
                     else:
-                        return "false"
+                        return 0
                 elif self.op.op == "!=":
                     if left != right:
-                        return "true"
+                        return 1
                     else:
-                        return "false"
+                        return 0
                 elif self.op.op == "==":
                     if left == right:
-                        return "true"
+                        return 1
                     else:
-                        return "false"
+                        return 0
                 else:  # op == ^
                     return left ** right
         else:
@@ -402,34 +402,34 @@ class D_expr_triple(D_expr):
                     return left // right  # floor division
                 elif self.op.op == ">":
                     if left > right:
-                        return "true"
+                        return 1
                     else:
-                        return "false"
+                        return 0
                 elif self.op.op == "<":
                     if left < right:
-                        return "true"
+                        return 1
                     else:
-                        return "false"
+                        return 0
                 elif self.op.op == "<=":
                     if left <= right:
-                        return "true"
+                        return 1
                     else:
-                        return "false"
+                        return 0
                 elif self.op.op == ">=":
                     if left >= right:
-                        return "true"
+                        return 1
                     else:
-                        return "false"
+                        return 0
                 elif self.op.op == "!=":
                     if left != right:
-                        return "true"
+                        return 1
                     else:
-                        return "false"
+                        return 0
                 elif self.op.op == "==":
                     if left == right:
-                        return "true"
+                        return 1
                     else:
-                        return "false"
+                        return 0
                 else:  # op == ^
                     return left ** right
         else:
