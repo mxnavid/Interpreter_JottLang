@@ -1,7 +1,7 @@
 # parses file and builds tree
 import re
 import sys
-from constants import dfa, term_tokens
+from constants import dfa, term_tokens, operators
 import token_classes as tc
 from code_gen import gen_code, verify_code
 variables = {}
@@ -361,23 +361,18 @@ def build_tree(tokens, tree):
         return tokens
 
     elif tree.node == "expr" and tokens[0].type == "Number" and '.' not in tokens[0].value:
-        if (tokens[1].type == "+" or tokens[1].type == "-" or tokens[1].type == "*" or tokens[1].type == "/" or
-                        tokens[1].type == "^" or tokens[1].type == ">" or tokens[1].type == "<"):
+        if tokens[1].type in operators:
             tree.expr = tc.I_expr_triple()
             last = next(i for i, v in enumerate(tokens) if (v.type == ")" or v.type == ";")) - 1
             tree.expr.right = tc.Int()
             tree.expr.right.int = tokens.pop(last).value
             tree.expr.op = tc.Op()
-            if tokens[last - 1].value == "-" and (tokens[last - 2].value == "+" or tokens[last - 2].value == "-" or
-                                                  tokens[last - 2].value == "/" or tokens[last - 2].value == "*" or
-                                                  tokens[last - 2].value == "^" or tokens[last - 2].type == ">" or
-                                                  tokens[last - 2].type == "<"):
+            if tokens[last - 1].value == "-" and (tokens[last - 2].value in operators):
                 tree.expr.right.sign.child = tokens.pop(last - 1).value
                 tree.expr.op.op = tokens.pop(last - 2).value
             else:
                 tree.expr.op.op = tokens.pop(last - 1).value
-            if tokens[1].type == "+" or tokens[1].type == "-" or tokens[1].type == "*" or tokens[1].type == "/" or \
-                            tokens[1].type == "^" or tokens[1].type == "<" or tokens[1].type == ">":
+            if tokens[1].type in operators:
                 tree.expr.left = tc.I_expr_triple()
             else:
                 tree.expr.left = tc.Int()
