@@ -302,6 +302,11 @@ class I_expr_triple(I_expr):
                         return "true"
                     else:
                         return "false"
+                elif self.op.op == "==":
+                    if left == right:
+                        return "true"
+                    else:
+                        return "false"
                 else:  # op == ^
                     return left ** right
         else:
@@ -341,6 +346,11 @@ class I_expr_triple(I_expr):
                 return 0
         elif self.op.op == "!=":
             if left != right:
+                return 1
+            else:
+                return 0
+        elif self.op.op == "==":
+            if left == right:
                 return 1
             else:
                 return 0
@@ -415,6 +425,11 @@ class D_expr_triple(D_expr):
                         return "true"
                     else:
                         return "false"
+                elif self.op.op == "==":
+                    if left == right:
+                        return "true"
+                    else:
+                        return "false"
                 else:  # op == ^
                     return left ** right
         else:
@@ -454,6 +469,11 @@ class D_expr_triple(D_expr):
                 return 0
         elif self.op.op == "!=":
             if left != right:
+                return 1
+            else:
+                return 0
+        elif self.op.op == "==":
+            if left == right:
                 return 1
             else:
                 return 0
