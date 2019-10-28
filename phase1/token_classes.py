@@ -72,6 +72,15 @@ class End_paren:
         self.node = "end_paren"
         self.child = ")"
 
+class Start_curly:
+    def __init__(self):
+        self.node = "start_curly"
+        self.child = "{"
+
+class End_curly:
+    def __init__(self):
+        self.node = "end_curly"
+        self.child = "}"
 
 class Char:
     def __init__(self):
@@ -440,3 +449,26 @@ class Str_literal:
 
     def eval(self):
         return self.child.replace("\"","")
+
+
+class If_expr:
+    #WIP
+    def __init__(self):
+        self.node = "if_expr"
+        self.ifdef = "if" # May need to change to clearer naming conventions as .if cannot be used
+        self.startparen = Start_paren()
+        self.exprparen = Expr()
+        self.stopparen= End_paren()
+        self.startcurly = Start_curly()
+        self.exprcurly = Expr()
+        self.stopcurly = End_curly()
+        self.elsestmt = None
+
+    def verify(self):
+        return self.expr.verify()
+
+    def eval(self):
+        if( self.exprparen ):
+            self.exprcurly
+        elif( self.elsestmt != None):
+            self.elsestmt

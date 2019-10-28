@@ -191,6 +191,22 @@ class Asmt:
     def eval(self):
         variables[self.id.eval()] =  self.expr.eval()
 
+
+class While_loop:
+    def __init__(self):
+        self.node = "while"
+        self.type = None
+        self.left = I_expr
+        self.right = Stmt_list
+
+    def verify(self):
+        return "true"
+
+    def eval(self):
+        return 1
+
+
+
 class Id:
     def __init__(self):
         self.node = "id"
