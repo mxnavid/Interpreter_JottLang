@@ -231,6 +231,24 @@ def build_tree(tokens, tree):
         tokens = build_tree(tokens, tree.child.stop)
         return tokens
 
+    elif tree.node == "s_comp_expr" and tokens[0].type == "Str":
+        if (tokens[1].value == ";" or tokens[1].value == ")" or tokens[1].value == "("):
+            tree.child = tc.Str()
+            tokens = build_tree(tokens, tree.child)
+        else:
+            last = next(i for i, v in enumerate(tokens) if (v.type == ")" or v.type == ";")) - 1
+            tree.right = tc.Str()
+            tree.right.str = tokens.pop(last).value
+            tree.op = tc.Op()
+            tree.op.op = tokens.pop(last - 1).value
+            if (tokens[0].type == "Str" and (tokens[1].type in operators)):
+                tree.left = tc.S_comp_expr()
+            else:
+                tree.left = tc.Str()
+            tokens = build_tree(tokens, tree.left)
+
+        return tokens
+
     elif tree.node == "stmt" and tokens[0].type == "charAt":
         tree.left = tc.Expr()
         tokens = build_tree(tokens, tree.left)
@@ -284,8 +302,12 @@ def build_tree(tokens, tree):
         return tokens[1:]
 
     elif tree.node == "expr" and tokens[0].type == "Str":
-        tree.expr = tc.S_expr()
-        tokens = build_tree(tokens, tree.expr)
+        if tokens[1].value in operators:
+            tree.expr = tc.S_comp_expr()
+            tokens = build_tree(tokens, tree.expr)
+        else:
+            tree.expr = tc.S_expr()
+            tokens = build_tree(tokens, tree.expr)
 
     elif tree.node == "expr" and tokens[0].type == "ID":
         tree.expr = tc.Id()
@@ -437,6 +459,10 @@ def build_tree(tokens, tree):
             tree.sign.child = tokens[0].value
             tokens = tokens[1:]
         tree.int = tokens[0].value
+        return tokens[1:]
+
+    elif tree.node == "str":
+        tree.str = tokens[0].value
         return tokens[1:]
 
     elif tree.node == "i_expr":

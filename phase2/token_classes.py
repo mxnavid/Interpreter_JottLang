@@ -492,6 +492,86 @@ class S_expr:
     def eval(self):
         return self.child.eval()
 
+class S_comp_expr:
+    def __init__(self):
+        self.node = "s_comp_expr"
+        self.left = None
+        self.op = None
+        self.right = None
+
+    def verify(self):
+        left = self.left.verify()
+        right = self.right.verify()
+        if not (self.op.op == ">" or self.op.op == "<" or self.op.op == ">=" or \
+            self.op.op == "<=" or self.op.op == "==" or self.op.op == "!="):
+            print("String comp expression error: operator was not a comparator")
+            return False
+        else:
+            if self.op.op == ">":
+                if left > right:
+                    return 1
+                else:
+                    return 0
+            elif self.op.op == "<":
+                if left < right:
+                    return 1
+                else:
+                    return 0
+            elif self.op.op == "<=":
+                if left <= right:
+                    return 1
+                else:
+                    return 0
+            elif self.op.op == ">=":
+                if left >= right:
+                    return 1
+                else:
+                    return 0
+            elif self.op.op == "!=":
+                if left != right:
+                    return 1
+                else:
+                    return 0
+            else:  # ==
+                if left == right:
+                    return 1
+                else:
+                    return 0
+
+    def eval(self):
+        left = self.left.eval()
+        right = self.right.eval()
+        if self.op.op == ">":
+            if left > right:
+                return 1
+            else:
+                return 0
+        elif self.op.op == "<":
+            if left < right:
+                return 1
+            else:
+                return 0
+        elif self.op.op == "<=":
+            if left <= right:
+                return 1
+            else:
+                return 0
+        elif self.op.op == ">=":
+            if left >= right:
+                return 1
+            else:
+                return 0
+        elif self.op.op == "!=":
+            if left != right:
+                return 1
+            else:
+                return 0
+        else:  # ==
+            if left == right:
+                return 1
+            else:
+                return 0
+
 class Op:
     def __init__(self):
         self.node = "op"
@@ -561,6 +641,9 @@ class Str:
     def __init__(self):
         self.node = "str"
         self.str = [Char(), Space(), str(), None]
+
+    def verify(self):
+        return True  # should probably make this actually do something
 
     def eval(self):
         return self.str
