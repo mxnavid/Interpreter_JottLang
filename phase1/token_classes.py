@@ -462,7 +462,7 @@ class If_expr:
         self.startcurly = Start_curly()
         self.stmtlist = Stmt_list()
         self.stopcurly = End_curly()
-        self.elsestmt = None
+        self.elsestmt = [Else_expr(), None]
 
     def verify(self):
         #May need to change how this returns the verifies
