@@ -72,14 +72,14 @@ class End_paren:
         self.node = "end_paren"
         self.child = ")"
 
-class Start_curly:
+class Start_blk:
     def __init__(self):
-        self.node = "start_curly"
+        self.node = "start_blk"
         self.child = "{"
 
-class End_curly:
+class End_blk:
     def __init__(self):
-        self.node = "end_curly"
+        self.node = "end_blk"
         self.child = "}"
 
 class Char:
@@ -459,9 +459,9 @@ class If_expr:
         self.startparen = Start_paren()
         self.expr = Expr()
         self.stopparen= End_paren()
-        self.startcurly = Start_curly()
+        self.startblk = Start_blk()
         self.stmtlist = Stmt_list()
-        self.stopcurly = End_curly()
+        self.stopblk = End_blk()
         self.elsestmt = [Else_expr(), None]
 
     def verify(self):
@@ -482,9 +482,9 @@ class Else_expr:
     def __init__(self):
         self.node = "else_expr"
         self.elsedef = "else"
-        self.startcurly = Start_curly()
+        self.startblk = Start_blk()
         self.stmtlist = Stmt_list()
-        self.endcurly = End_curly()
+        self.endblk = End_blk()
 
     def verify(self):
         return self.stmtlist.verify()
