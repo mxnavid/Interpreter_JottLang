@@ -72,6 +72,15 @@ class End_paren:
         self.node = "end_paren"
         self.child = ")"
 
+class Start_blk:
+    def __init__(self):
+        self.node = "start_blk"
+        self.child = "{"
+
+class End_blk:
+    def __init__(self):
+        self.node = "end_blk"
+        self.child = "}"
 
 class Char:
     def __init__(self):
@@ -660,3 +669,44 @@ class Str_literal:
 
     def eval(self):
         return self.child.replace("\"", "")
+
+class If_expr:
+    #WIP
+    def __init__(self):
+        self.node = "if_expr"
+        self.ifdef = "if" # May need to change to clearer naming conventions as .if cannot be used
+        self.startparen = Start_paren()
+        self.expr = Expr()
+        self.stopparen= End_paren()
+        self.startblk = Start_blk()
+        self.stmtlist = Stmt_list()
+        self.stopblk = End_blk()
+        self.elsestmt = [Else_expr(), None]
+
+    def verify(self):
+        #May need to change how this returns the verifies
+        ifexpr = self.expr.verify()
+        ifstmt = self.stmtlist.verify()
+        return ifexpr, ifstmt
+
+    def eval(self):
+        if( self.expr.eval() ):
+            return self.stmtlist.eval()
+        elif( self.elsestmt != None):
+            return self.elsestmt.eval()
+        return None #TODO: Handle case where there's no else and if is false
+
+class Else_expr:
+    #WIP
+    def __init__(self):
+        self.node = "else_expr"
+        self.elsedef = "else"
+        self.startblk = Start_blk()
+        self.stmtlist = Stmt_list()
+        self.endblk = End_blk()
+
+    def verify(self):
+        return self.stmtlist.verify()
+
+    def eval(self):
+        return self.stmtlist.eval()
