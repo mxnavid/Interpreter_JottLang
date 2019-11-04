@@ -1,7 +1,7 @@
 # parses file and builds tree
 import re
 import sys
-from constants import dfa, term_tokens, operators
+from constants import dfa, term_tokens, operators, comp_operators
 import token_classes as tc
 from code_gen import gen_code, verify_code
 variables = {}
@@ -53,33 +53,48 @@ def build_tree(tokens, tree):
                 tokens = build_tree(tokens, tree.child.expr)
                 tokens = tokens[1:]
             elif tree.child.type == "Integer":
-                if tokens[1].type in operators:
-                    if tokens[3].type in operators:
-                        tree.child.expr = tc.I_expr_triple()
-                        last = next(i for i, v in enumerate(tokens) if (v.type == ")" or v.type == ";")) - 1
-                        tree.child.expr.right = tc.Int()
-                        tree.child.expr.right.int = tokens.pop(last).value
-                        tree.child.expr.op = tc.Op()
-                        tree.child.expr.op.op = tokens.pop(last - 1).value
-                        if tokens[1].type in operators:
-                            tree.child.expr.left = tc.I_expr_triple()
-                        else:
-                            tree.child.expr.left = tc.Int()
-                        tokens = build_tree(tokens, tree.child.expr.left)
-                    else:
-                        tree.child.expr = tc.I_expr_triple()
-                        tree.child.expr.left = tc.Int()
+                if tokens[0].type == "Str":
+                    if tokens[1].type in comp_operators:
+                        tree.child.expr = tc.S_comp_expr()
+                        tree.child.expr.left = tc.Str()
                         tokens = build_tree(tokens, tree.child.expr.left)
                         tree.child.expr.op = tc.Op()
                         tokens = build_tree(tokens, tree.child.expr.op)
-                        tree.child.expr.right = tc.Int()
+                        tree.child.expr.right = tc.Str()
                         tokens = build_tree(tokens, tree.child.expr.right)
-                    tokens = tokens[1:]
-
+                        tokens = tokens[1:]
+                    else:
+                        print("Syntax Error: Expected , got " + str(tokens[0].value) + ", \"" + tokens[0].line[
+                            1] + "\" Line: " + str(tokens[0].line[0]))
+                        sys.exit()
                 else:
-                    tree.child.expr = tc.I_expr_single()
-                    tokens = build_tree(tokens, tree.child.expr)
-                    tokens = build_tree(tokens, tree.child.end)
+                    if tokens[1].type in operators:
+                        if tokens[3].type in operators:
+                            tree.child.expr = tc.I_expr_triple()
+                            last = next(i for i, v in enumerate(tokens) if (v.type == ")" or v.type == ";")) - 1
+                            tree.child.expr.right = tc.Int()
+                            tree.child.expr.right.int = tokens.pop(last).value
+                            tree.child.expr.op = tc.Op()
+                            tree.child.expr.op.op = tokens.pop(last - 1).value
+                            if tokens[1].type in operators:
+                                tree.child.expr.left = tc.I_expr_triple()
+                            else:
+                                tree.child.expr.left = tc.Int()
+                            tokens = build_tree(tokens, tree.child.expr.left)
+                        else:
+                            tree.child.expr = tc.I_expr_triple()
+                            tree.child.expr.left = tc.Int()
+                            tokens = build_tree(tokens, tree.child.expr.left)
+                            tree.child.expr.op = tc.Op()
+                            tokens = build_tree(tokens, tree.child.expr.op)
+                            tree.child.expr.right = tc.Int()
+                            tokens = build_tree(tokens, tree.child.expr.right)
+                        tokens = tokens[1:]
+
+                    else:
+                        tree.child.expr = tc.I_expr_single()
+                        tokens = build_tree(tokens, tree.child.expr)
+                        tokens = build_tree(tokens, tree.child.end)
 
             elif tree.child.type == "Double":
                 if tokens[1].type in operators:

@@ -39,6 +39,8 @@ term_tokens = {
 
 operators = {"+", "-", "*", "/", "^", ">", "<", ">=", "<=", "!=", "=="}
 
+comp_operators = {">", "<", ">=", "<=", "!=", "=="}
+
 # TODO Check state 15 for term_tokens
 
 dfa_old = {0: {"\n": 0, " ": 0, "\t": 0, ".": 2, "=": 5, "(": 6, ")": 7,
