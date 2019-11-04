@@ -673,7 +673,7 @@ class Str_literal:
 class If_expr:
     #WIP
     def __init__(self):
-        self.node = "if_expr"
+        self.node = "if"
         self.ifdef = "if" # May need to change to clearer naming conventions as .if cannot be used
         self.startparen = Start_paren()
         self.expr = Expr()
@@ -699,7 +699,7 @@ class If_expr:
 class Else_expr:
     #WIP
     def __init__(self):
-        self.node = "else_expr"
+        self.node = "else"
         self.elsedef = "else"
         self.startblk = Start_blk()
         self.stmtlist = Stmt_list()
