@@ -457,18 +457,37 @@ class If_expr:
         self.node = "if_expr"
         self.ifdef = "if" # May need to change to clearer naming conventions as .if cannot be used
         self.startparen = Start_paren()
-        self.exprparen = Expr()
+        self.expr = Expr()
         self.stopparen= End_paren()
         self.startcurly = Start_curly()
-        self.exprcurly = Expr()
+        self.stmtlist = Stmt_list()
         self.stopcurly = End_curly()
-        self.elsestmt = None
+        self.elsestmt = [Else_expr(), None]
 
     def verify(self):
-        return self.expr.verify()
+        #May need to change how this returns the verifies
+        ifexpr = self.expr.verify()
+        ifstmt = self.stmtlist.verify()
+        return ifexpr, ifstmt
 
     def eval(self):
-        if( self.exprparen ):
-            self.exprcurly
+        if( self.expr.eval() ):
+            return self.stmtlist.eval()
         elif( self.elsestmt != None):
-            self.elsestmt
+            return self.elsestmt.eval()
+        return None #TODO: Handle case where there's no else and if is false
+
+class Else_expr:
+    #WIP
+    def __init__(self):
+        self.node = "else_expr"
+        self.elsedef = "else"
+        self.startcurly = Start_curly()
+        self.stmtlist = Stmt_list()
+        self.endcurly = End_curly()
+
+    def verify(self):
+        return self.stmtlist.verify()
+
+    def eval(self):
+        return self.stmtlist.eval()
