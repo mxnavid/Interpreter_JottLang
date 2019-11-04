@@ -72,16 +72,6 @@ class End_paren:
         self.node = "end_paren"
         self.child = ")"
 
-class Start_blk:
-    def __init__(self):
-        self.node = "start_blk"
-        self.child = "{"
-
-class End_blk:
-    def __init__(self):
-        self.node = "end_blk"
-        self.child = "}"
-
 class Char:
     def __init__(self):
         self.node = "char"
