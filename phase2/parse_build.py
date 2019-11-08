@@ -38,13 +38,15 @@ def build_tree(tokens, tree):
         tokens = build_tree(tokens, tree.child.stop)
         tokens = build_tree(tokens, tree.child.end)
         return tokens
-
     elif tree.node == "stmt" and (tokens[0].type == "Integer" or tokens[0].type == "Double" or
-                                          tokens[0].type == "String"):
+                                          tokens[0].type == "String" or tokens[0].value in variables):
         tree.child = tc.Asmt()
-        tree.child.type = tokens[0].type
-        variables[tokens[1].value] = tokens[0].type
-        tokens = tokens[1:]
+        if tokens[0].value not in variables:
+            tree.child.type = tokens[0].type
+            variables[tokens[1].value] = tokens[0].type
+            tokens = tokens[1:]
+        else:
+            tree.child.type = variables[tokens[0].value]
         tokens = build_tree(tokens, tree.child.id)
         if tokens[0].type == "=":
             tokens = tokens[1:]

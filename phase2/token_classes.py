@@ -191,14 +191,19 @@ class Asmt:
         self.end = End_stmt()
 
     def verify(self):
-        var = self.id.verify()
-        val = self.expr.verify()
-        if val:
-            variables[var] = val
+        if self.id.child in variables:
+            return True
+        else:
+            var = self.id.verify()
+            val = self.expr.verify()
+            if val:
+                variables[var] = val
         return True
 
     def eval(self):
-        variables[self.id.eval()] =  self.expr.eval()
+        variables[self.id.child] = self.expr.eval()
+        #variables[self.id.eval()] =  self.expr.eval()
+        #print(variables)
 
 
 class While_loop:
