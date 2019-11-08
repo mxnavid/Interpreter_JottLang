@@ -676,7 +676,7 @@ class If_expr:
         self.node = "if"
         self.ifdef = "if" # May need to change to clearer naming conventions as .if cannot be used
         self.startparen = Start_paren()
-        self.expr = Expr()
+        self.comp = Expr()
         self.stopparen= End_paren()
         self.startblk = Start_blk()
         self.stmtlist = Stmt_list()
@@ -684,13 +684,18 @@ class If_expr:
         self.elsestmt = [Else_expr(), None]
 
     def verify(self):
-        #May need to change how this returns the verifies
-        ifexpr = self.expr.verify()
-        ifstmt = self.stmtlist.verify()
-        return ifexpr, ifstmt
+        if(self.comp.verify()):
+            if(self.stmtlist.verify()):
+                if(self.elsestmt != None):
+                    if(self.elsestmt.verify()):
+                        return True #else statement verify
+                    return False #else statement verify
+                return True #no else statement found
+            return False #statement list verify
+        return False #comparator verify
 
     def eval(self):
-        if( self.expr.eval() ):
+        if( self.comp.eval() > 0 ):
             return self.stmtlist.eval()
         elif( self.elsestmt != None):
             return self.elsestmt.eval()
