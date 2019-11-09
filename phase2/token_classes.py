@@ -201,7 +201,7 @@ class Asmt:
         return val
 
     def eval(self):
-        variables[self.id.eval()] = self.expr.eval()
+        variables[self.id.child] = self.expr.eval()
 
 
 class While_loop:
