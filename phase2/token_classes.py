@@ -600,17 +600,15 @@ class If_expr:
         self.startblk = Start_blk()
         self.stmtlist = Stmt_list()
         self.stopblk = End_blk()
-        self.elsestmt = [Else_expr(), None]
+        self.elsestmt = None
 
     def verify(self):
-        if(self.comp.verify()):
-            if(self.stmtlist.verify()):
+        if(self.comp.verify() and self.stmtlist.verify()):
                 if(self.elsestmt != None):
                     if(self.elsestmt.verify()):
                         return True #else statement verify
                     return False #else statement verify
                 return True #no else statement found
-            return False #statement list verify
         return False #comparator verify
 
     def eval(self):
