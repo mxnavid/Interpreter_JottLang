@@ -195,10 +195,10 @@ class Asmt:
         val = self.expr.verify()
         if val:
             variables[var] = val
-        return True
+        return val
 
     def eval(self):
-        variables[self.id.eval()] =  self.expr.eval()
+        variables[self.id.eval()] = self.expr.eval()
 
 
 class While_loop:
@@ -260,6 +260,87 @@ class I_expr_single(I_expr):
     def eval(self):
         return self.child.eval()
 
+class I_expr_triple_comp(I_expr):
+    def __init__(self):
+        super().__init__()
+        self.node = "comp_expr"
+        self.left = None
+        self.op = None
+        self.right = None
+
+    def verify(self):
+        left = self.left.verify()
+        right = self.right.verify()
+        if type(left) != type(right):
+            print("Syntax Error: Type mismatch: Expected " + str(type(left).__name__).upper() + " got " + str(
+                type(right).__name__).upper(), end=", ")
+            return False
+        else:
+            if self.op.op == ">":
+                if left > right:
+                    return 1
+                else:
+                    return 0
+            elif self.op.op == "<":
+                if left < right:
+                    return 1
+                else:
+                    return 0
+            elif self.op.op == ">=":
+                if left >= right:
+                    return 1
+                else:
+                    return 0
+            elif self.op.op == "<=":
+                if left <= right:
+                    return 1
+                else:
+                    return 0
+            elif self.op.op == "==":
+                if left == right:
+                    return 1
+                else:
+                    return 0
+            elif self.op.op == "!=":
+                if left != right:
+                    return 1
+                else:
+                    return 0
+
+    def eval(self):
+        left = self.left.eval()
+        right = self.right.eval()
+        if self.op.op == ">":
+            if left > right:
+                return 1
+            else:
+                return 0
+        elif self.op.op == "<":
+            if left < right:
+                return 1
+            else:
+                return 0
+        elif self.op.op == "<=":
+            if left <= right:
+                return 1
+            else:
+                return 0
+        elif self.op.op == ">=":
+            if left >= right:
+                return 1
+            else:
+                return 0
+        elif self.op.op == "!=":
+            if left != right:
+                return 1
+            else:
+                return 0
+        else:  # ==
+            if left == right:
+                return 1
+            else:
+                return 0
+
 class I_expr_triple(I_expr):
     def __init__(self):
         super().__init__()
@@ -286,36 +367,6 @@ class I_expr_triple(I_expr):
                     return left * right
                 elif self.op.op == "/":
                     return left // right  # floor division
-                elif self.op.op == ">":
-                    if left > right:
-                        return 1
-                    else:
-                        return 0
-                elif self.op.op == "<":
-                    if left < right:
-                        return 1
-                    else:
-                        return 0
-                elif self.op.op == "<=":
-                    if left <= right:
-                        return 1
-                    else:
-                        return 0
-                elif self.op.op == ">=":
-                    if left >= right:
-                        return 1
-                    else:
-                        return 0
-                elif self.op.op == "!=":
-                    if left != right:
-                        return 1
-                    else:
-                        return 0
-                elif self.op.op == "==":
-                    if left == right:
-                        return 1
-                    else:
-                        return 0
                 else:  # op == ^
                     return left ** right
         else:
@@ -333,36 +384,6 @@ class I_expr_triple(I_expr):
             return left * right
         elif self.op.op == "/":
             return left // right  # floor division
-        elif self.op.op == ">":
-            if left > right:
-                return 1
-            else:
-                return 0
-        elif self.op.op == "<":
-            if left < right:
-                return 1
-            else:
-                return 0
-        elif self.op.op == "<=":
-            if left <= right:
-                return 1
-            else:
-                return 0
-        elif self.op.op == ">=":
-            if left >= right:
-                return 1
-            else:
-                return 0
-        elif self.op.op == "!=":
-            if left != right:
-                return 1
-            else:
-                return 0
-        elif self.op.op == "==":
-            if left == right:
-                return 1
-            else:
-                return 0
         else:  # op == ^
             return left ** right
 
@@ -409,36 +430,6 @@ class D_expr_triple(D_expr):
                     return left * right
                 elif self.op.op == "/":
                     return left // right  # floor division
-                elif self.op.op == ">":
-                    if left > right:
-                        return 1.0
-                    else:
-                        return 0.0
-                elif self.op.op == "<":
-                    if left < right:
-                        return 1.0
-                    else:
-                        return 0.0
-                elif self.op.op == "<=":
-                    if left <= right:
-                        return 1.0
-                    else:
-                        return 0.0
-                elif self.op.op == ">=":
-                    if left >= right:
-                        return 1.0
-                    else:
-                        return 0.0
-                elif self.op.op == "!=":
-                    if left != right:
-                        return 1.0
-                    else:
-                        return 0.0
-                elif self.op.op == "==":
-                    if left == right:
-                        return 1.0
-                    else:
-                        return 0.0
                 else:  # op == ^
                     return left ** right
         else:
@@ -456,36 +447,6 @@ class D_expr_triple(D_expr):
             return left * right
         elif self.op.op == "/":
             return left / right
-        elif self.op.op == ">":
-            if left > right:
-                return 1
-            else:
-                return 0
-        elif self.op.op == "<":
-            if left < right:
-                return 1
-            else:
-                return 0
-        elif self.op.op == "<=":
-            if left <= right:
-                return 1
-            else:
-                return 0
-        elif self.op.op == ">=":
-            if left >= right:
-                return 1
-            else:
-                return 0
-        elif self.op.op == "!=":
-            if left != right:
-                return 1
-            else:
-                return 0
-        elif self.op.op == "==":
-            if left == right:
-                return 1
-            else:
-                return 0
         else:  # op == ^
             return left ** right
 
@@ -501,85 +462,6 @@ class S_expr:
     def eval(self):
         return self.child.eval()
 
-class S_comp_expr:
-    def __init__(self):
-        self.node = "s_comp_expr"
-        self.left = None
-        self.op = None
-        self.right = None
-
-    def verify(self):
-        left = self.left.verify()
-        right = self.right.verify()
-        if not (self.op.op == ">" or self.op.op == "<" or self.op.op == ">=" or \
-            self.op.op == "<=" or self.op.op == "==" or self.op.op == "!="):
-            print("String comp expression error: operator was not a comparator")
-            return False
-        else:
-            if self.op.op == ">":
-                if left > right:
-                    return 1
-                else:
-                    return 0
-            elif self.op.op == "<":
-                if left < right:
-                    return 1
-                else:
-                    return 0
-            elif self.op.op == "<=":
-                if left <= right:
-                    return 1
-                else:
-                    return 0
-            elif self.op.op == ">=":
-                if left >= right:
-                    return 1
-                else:
-                    return 0
-            elif self.op.op == "!=":
-                if left != right:
-                    return 1
-                else:
-                    return 0
-            else:  # ==
-                if left == right:
-                    return 1
-                else:
-                    return 0
-
-    def eval(self):
-        left = self.left.eval()
-        right = self.right.eval()
-        if self.op.op == ">":
-            if left > right:
-                return 1
-            else:
-                return 0
-        elif self.op.op == "<":
-            if left < right:
-                return 1
-            else:
-                return 0
-        elif self.op.op == "<=":
-            if left <= right:
-                return 1
-            else:
-                return 0
-        elif self.op.op == ">=":
-            if left >= right:
-                return 1
-            else:
-                return 0
-        elif self.op.op == "!=":
-            if left != right:
-                return 1
-            else:
-                return 0
-        else:  # ==
-            if left == right:
-                return 1
-            else:
-                return 0
 
 class Op:
     def __init__(self):
@@ -652,7 +534,7 @@ class Str:
         self.str = [Char(), Space(), str(), None]
 
     def verify(self):
-        return True  # should probably make this actually do something
+        return self.str  # should probably make this actually do something
 
     def eval(self):
         return self.str
