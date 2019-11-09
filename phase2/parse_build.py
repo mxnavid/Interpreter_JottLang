@@ -42,12 +42,32 @@ def build_tree(tokens, tree):
         tokens = tokens[1:]
         tokens = build_tree(tokens, tree.child.startparen)
         tokens = build_tree(tokens, tree.child.comp)
-
         tokens = build_tree(tokens, tree.child.stopparen)
         tokens = build_tree(tokens, tree.child.startblk)
         tokens = build_tree(tokens, tree.child.stmtlist)
         tokens = build_tree(tokens, tree.child.stopblk)
+        # if tokens[0].value == "else":
+        #     tree.child = tc.Else_expr()
+        #     tokens = tokens[1:]
+        #     tokens = build_tree(tokens, tree.child.startblk)
+        #     tokens = build_tree(tokens, tree.child.stmtlist)
+        #     tokens = build_tree(tokens, tree.child.endblk)
         return tokens
+
+    elif tree.node == "stmt" and tokens[0].type == "ID" and tokens[0].value == "while":
+        tree.child = tc.While_loop()
+        tokens = tokens[1:]
+        tokens = build_tree(tokens, tree.child.startparen)
+        tokens = build_tree(tokens, tree.child.comp)
+        tokens = build_tree(tokens, tree.child.endparen)
+        tokens = build_tree(tokens, tree.child.startblk)
+        tokens = build_tree(tokens, tree.child.stmtlist)
+        tokens = build_tree(tokens, tree.child.endblk)
+        return tokens
+
+    elif tree.node == "stmt" and tokens[0].type == "ID" and tokens[0].value == "for":
+        pass
+    
     elif tree.node == "stmt" and (tokens[0].type == "Integer" or tokens[0].type == "Double" or
                                           tokens[0].type == "String" or tokens[0].value in variables):
         tree.child = tc.Asmt()
@@ -265,6 +285,21 @@ def build_tree(tokens, tree):
                 tree.expr.op = tc.Op()
                 tokens = build_tree(tokens, tree.expr.op)
 
+                if tokens[1].value == ';' or tokens[1].value == ')' or tokens[1].value == '(':
+                    if tokens[0].type == "ID":
+                        tree.expr.right = tc.Id()
+                    else:
+                        tree.expr.right = tc.Int()
+                    tokens = build_tree(tokens, tree.expr.right)
+                else:
+                    tree.expr.right = tc.I_expr_triple()
+                    tokens = build_tree(tokens, tree.expr.right)
+            elif tokens[1].type in comp_operators:
+                tree.expr = tc.I_expr_triple_comp()
+                tree.expr.left = tc.Id()
+                tokens = build_tree(tokens, tree.expr.left)
+                tree.expr.op = tc.Op()
+                tokens = build_tree(tokens, tree.expr.op)
                 if tokens[1].value == ';' or tokens[1].value == ')' or tokens[1].value == '(':
                     if tokens[0].type == "ID":
                         tree.expr.right = tc.Id()
