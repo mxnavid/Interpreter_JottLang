@@ -46,12 +46,15 @@ def build_tree(tokens, tree):
         tokens = build_tree(tokens, tree.child.startblk)
         tokens = build_tree(tokens, tree.child.stmtlist)
         tokens = build_tree(tokens, tree.child.stopblk)
-        # if tokens[0].value == "else":
-        #     tree.child = tc.Else_expr()
-        #     tokens = tokens[1:]
-        #     tokens = build_tree(tokens, tree.child.startblk)
-        #     tokens = build_tree(tokens, tree.child.stmtlist)
-        #     tokens = build_tree(tokens, tree.child.endblk)
+
+        if tokens[0].value == "else":
+            tree.child.elsestmt = tc.Else_expr()
+            tokens = build_tree(tokens, tree.child.elsestmt)
+            tree.child = tc.Else_expr()
+            tokens = tokens[1:]
+            tokens = build_tree(tokens, tree.child.startblk)
+            tokens = build_tree(tokens, tree.child.stmtlist)
+            tokens = build_tree(tokens, tree.child.endblk)
         return tokens
 
     elif tree.node == "stmt" and tokens[0].type == "ID" and tokens[0].value == "while":
