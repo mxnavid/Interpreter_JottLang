@@ -248,11 +248,10 @@ class For_loop:
         return False
 
     def eval(self):
-        #TODO: figure out how to get the variable's state and increment + check it
-
-        # for():
-        #     self.stmtlist.eval()
-        return "for loop" #Filler, will be changed once for loop is working
+        #TODO: figure out how to use Python's for loop (x in range of initial value to end value in i_expr) 
+        while(self.iexpr.eval()):
+            self.stmtlist.eval()
+            self.reasmt.eval()
 
 class Id:
     def __init__(self):
