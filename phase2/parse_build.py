@@ -49,6 +49,16 @@ def build_tree(tokens, tree):
         if tokens[0].type == "=":
             tokens = tokens[1:]
             if tree.child.type == "String":
+                if tokens[0].type == "Number":
+                    if '.' in tokens[0].value:
+                        print("Syntax Error: Invalid type in re-assignment: Expected String got Float, \"" +
+                              tokens[0].line[
+                                  1].replace('\n', '"') + " Line: " + str(tokens[0].line[0]))
+                    else:
+                        print("Syntax Error: Invalid type in re-assignment: Expected String got Integer, \"" +
+                              tokens[0].line[
+                                  1].replace('\n', '"') + " Line: " + str(tokens[0].line[0]))
+                    sys.exit()
                 tree.child.expr = tc.S_expr()
                 tokens = build_tree(tokens, tree.child.expr)
                 tokens = tokens[1:]
@@ -64,8 +74,12 @@ def build_tree(tokens, tree):
                         tokens = build_tree(tokens, tree.child.expr.right)
                         tokens = tokens[1:]
                     else:
-                        print("Syntax Error: Expected , got " + str(tokens[0].value) + ", \"" + tokens[0].line[
-                            1] + "\" Line: " + str(tokens[0].line[0]))
+                        if tokens[1].type == ';':
+                            print("Syntax Error: Invalid type in re-assignment: Expected Integer got String, \"" + tokens[0].line[
+                                1].replace('\n','"') + " Line: " + str(tokens[0].line[0]))
+                        else:
+                            print("Syntax Error: Expected , got " + str(tokens[0].value) + ", \"" + tokens[0].line[
+                                1] + "\" Line: " + str(tokens[0].line[0]))
                         sys.exit()
                 elif tokens[0].type == "Number" and '.' in tokens[0].value:
                     if tokens[1].type in comp_operators:
@@ -78,8 +92,12 @@ def build_tree(tokens, tree):
                         tokens = build_tree(tokens, tree.child.expr.right)
                         tokens = tokens[1:]
                     else:
-                        print("Syntax Error: Expected , got " + str(tokens[0].value) + ", \"" + tokens[0].line[
-                            1] + "\" Line: " + str(tokens[0].line[0]))
+                        if tokens[1].type == ';':
+                            print("Syntax Error: Invalid type in re-assignment: Expected Integer got Float, \"" + tokens[0].line[
+                                1].replace('\n','"') + " Line: " + str(tokens[0].line[0]))
+                        else:
+                            print("Syntax Error: Expected , got " + str(tokens[0].value) + ", \"" + tokens[0].line[
+                                1] + "\" Line: " + str(tokens[0].line[0]))
                         sys.exit()
                 else:
                     if tokens[1].type in math_operators:
@@ -142,9 +160,20 @@ def build_tree(tokens, tree):
                         tokens = build_tree(tokens, tree.child.expr.right)
                     tokens = tokens[1:]
                 else:
-                    tree.child.expr = tc.D_expr_single()
-                    tokens = build_tree(tokens, tree.child.expr)
-                    tokens = build_tree(tokens, tree.child.end)
+                    if '.' in tokens[0].value:
+                        tree.child.expr = tc.D_expr_single()
+                        tokens = build_tree(tokens, tree.child.expr)
+                        tokens = build_tree(tokens, tree.child.end)
+                    else:
+                        try:
+                            int(tokens[0].value)
+                            print("Syntax Error: Invalid type in re-assignment: Expected Float got Integer, \"" + tokens[0].line[
+                                1].replace('\n','"') + " Line: " + str(tokens[0].line[0]))
+
+                        except ValueError:
+                            print("Syntax Error: Invalid type in re-assignment: Expected Float got String, \"" + tokens[0].line[
+                                1].replace('\n','"') + " Line: " + str(tokens[0].line[0]))
+                        sys.exit()
 
         return tokens
 
