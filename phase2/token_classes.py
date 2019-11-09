@@ -208,16 +208,51 @@ class While_loop:
     def __init__(self):
         self.node = "while"
         self.type = None
-        self.left = I_expr
-        self.right = Stmt_list
+        self.whilestmt = "while"
+        self.startparen = Start_paren()
+        self.comp = I_expr
+        self.endparen = End_paren()
+        self.startblk = Start_blk()
+        self.stmtlist = Stmt_list
+        self.endblk = End_blk()
 
     def verify(self):
-        return "true"
+        if(self.comp.verify()):
+            if(self.stmtlist.verify()):
+                return True
+
+        return False
 
     def eval(self):
-        return 1
+        while(self.comp):
+            self.stmtlist.eval()
 
+class For_loop:
+    def __init__(self):
+        self.node = "for"
+        self.forstmt = "for"
+        self.startparen = Start_paren()
+        self.asmt = Asmt()
+        self.iexpr = I_expr()
+        self.reasmt = Asmt()
+        self.endparen = End_paren()
+        self.startblk = Start_blk()
+        self.stmtlist = Stmt_list()
+        self.endblk = End_blk()
 
+    def verify(self):
+        if(self.asmt.verify() and self.iexpr.verify() and self.reasmt.verify()):
+            if(self.stmtlist.verify()):
+                return True
+
+        return False
+
+    def eval(self):
+        #TODO: figure out how to get the variable's state and increment + check it
+
+        # for():
+        #     self.stmtlist.eval()
+        return "for loop" #Filler, will be changed once for loop is working
 
 class Id:
     def __init__(self):
