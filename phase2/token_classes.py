@@ -191,10 +191,13 @@ class Asmt:
         self.end = End_stmt()
 
     def verify(self):
-        var = self.id.verify()
-        val = self.expr.verify()
-        if val:
-            variables[var] = val
+        if self.id.child in variables:
+            return True
+        else:
+            var = self.id.verify()
+            val = self.expr.verify()
+            if val:
+                variables[var] = val
         return val
 
     def eval(self):

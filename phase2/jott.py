@@ -12,8 +12,8 @@ def main():
 
     tokens = pb.parser(sys.argv[1])
     if tokens:
-        for thing in tokens:
-            print(thing.type)
+        #for thing in tokens:
+        #    print(thing.type)
         pb.build_tree(tokens, None)
 
 
