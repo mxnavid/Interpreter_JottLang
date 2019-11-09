@@ -147,7 +147,10 @@ def build_tree(tokens, tree):
                             tokens = build_tree(tokens, tree.child.expr.left)
                         else:
                             tree.child.expr = tc.I_expr_triple()
-                            tree.child.expr.left = tc.Int()
+                            if(tokens[0].value in variables):
+                                tree.child.expr.left = tc.Id()
+                            else:
+                                tree.child.expr.left = tc.Int()
                             tokens = build_tree(tokens, tree.child.expr.left)
                             tree.child.expr.op = tc.Op()
                             tokens = build_tree(tokens, tree.child.expr.op)
