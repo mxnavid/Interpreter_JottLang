@@ -67,7 +67,7 @@ def build_tree(tokens, tree):
 
     elif tree.node == "stmt" and tokens[0].type == "ID" and tokens[0].value == "for":
         pass
-    
+
     elif tree.node == "stmt" and (tokens[0].type == "Integer" or tokens[0].type == "Double" or
                                           tokens[0].type == "String" or tokens[0].value in variables):
         tree.child = tc.Asmt()
