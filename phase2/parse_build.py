@@ -19,7 +19,8 @@ def build_tree(tokens, tree):
             if tokens[0].type == 'concat' or tokens[0].type == 'charAt':
                 tree.left = tc.Stmt()
                 tokens = build_tree(tokens, tree.left)
-
+            elif tokens[0].value == "}":
+                return tokens
             else:
                 tree.left = tc.Stmt_single()
                 tokens = build_tree(tokens, tree.left)
@@ -35,6 +36,17 @@ def build_tree(tokens, tree):
         tokens = build_tree(tokens, tree.child.expr)
         tokens = build_tree(tokens, tree.child.stop)
         tokens = build_tree(tokens, tree.child.end)
+        return tokens
+    elif tree.node == "stmt" and tokens[0].type == "ID" and tokens[0].value == "if":
+        tree.child = tc.If_expr()
+        tokens = tokens[1:]
+        tokens = build_tree(tokens, tree.child.startparen)
+        tokens = build_tree(tokens, tree.child.comp)
+
+        tokens = build_tree(tokens, tree.child.stopparen)
+        tokens = build_tree(tokens, tree.child.startblk)
+        tokens = build_tree(tokens, tree.child.stmtlist)
+        tokens = build_tree(tokens, tree.child.stopblk)
         return tokens
     elif tree.node == "stmt" and (tokens[0].type == "Integer" or tokens[0].type == "Double" or
                                           tokens[0].type == "String" or tokens[0].value in variables):
@@ -344,6 +356,18 @@ def build_tree(tokens, tree):
             print("Syntax Error: Expected ) got " + str(tokens[0].value) + ", \""+tokens[0].line[1]+"\" Line: " + str(tokens[0].line[0]))
             sys.exit()
 
+
+    elif tree.node == "start_blk":
+        if tokens[0].type == "{":
+            return tokens[1:]
+        else:
+            print("Syntax Error: Expected { got " + str(tokens[0].value) + ", \""+tokens[0].line[1]+"\" Line: " + str(tokens[0].line[0]))
+
+    elif tree.node == "end_blk":
+        if tokens[0].type == "}":
+            return tokens[1:]
+        else:
+            print("Syntax Error: Expected } got " + str(tokens[0].value) + ", \""+tokens[0].line[1]+"\" Line: " + str(tokens[0].line[0]))
 
     elif tree.node == "end_stmt":
         if tokens[0].type == ";":
