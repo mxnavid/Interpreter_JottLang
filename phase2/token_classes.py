@@ -594,55 +594,76 @@ class If_expr:
     #WIP
     def __init__(self):
         self.node = "if"
-        self.ifdef = "if" # May need to change to clearer naming conventions as .if cannot be used
         self.startparen = Start_paren()
         self.comp = Expr()
         self.stopparen= End_paren()
         self.startblk = Start_blk()
         self.stmtlist = Stmt_list()
         self.stopblk = End_blk()
+        self.elseblk = None
         self.elsestmt = None
+        self.elseblkend = None
+
+
+    # def verify(self):
+    #     if self.comp.verify() and self.stmtlist.verify():
+    #             if self.elsestmt != None :
+    #                 if self.elsestmt.verify():
+    #                     return True  # else statement verify
+    #                 return False  # else statement verify
+    #             return True  # no else statement found
+    #     return False  # comparator verify
+
+    # def eval(self):
+    #     if self.comp.eval() > 0:
+    #         return self.stmtlist.eval()
+    #     elif self.elsestmt != None:
+    #         return self.elsestmt.eval()
+    #     return None #TODO: Handle case where there's no else and if is false
 
     def verify(self):
         if self.comp.verify() and self.stmtlist.verify():
-                if self.elsestmt != None :
-                    if self.elsestmt.verify():
-                        return True  # else statement verify
-                    return False  # else statement verify
-                return True  # no else statement found
-        return False  # comparator verify
+            if self.elseblk == Start_paren():      # so if there is else statement we will verify it
+                if self.elsestmt.verify():
+                    return True
+                return False
+            else:
+                return True
+        return False
 
     def eval(self):
         if self.comp.eval() > 0:
             return self.stmtlist.eval()
-        elif self.elsestmt != None:
-            return self.elsestmt.eval()
-        return None #TODO: Handle case where there's no else and if is false
-
-class Else_expr:
-    #WIP
-    def __init__(self):
-        self.node = "else"
-        self.elsedef = "else"
-        self.startblk = Start_blk()
-        self.stmtlist = Stmt_list()
-        self.endblk = End_blk()
-
-
-    # def verify(self):
-    #     return self.stmtlist.verify()
-
-    def verify(self):
-        if If_expr.comp.verify() and If_expr.stmtlist.verify():
-            if self.stmtlist.verify():
-                return True
-            return False
-
-    # def eval(self):
-    #     return self.stmtlist.eval()
-
-    def eval(self):
-        if If_expr.comp.eval() > 0:
-            return If_expr.stmtlist.eval()
         else:
-            return self.stmtlist.eval()
+            return self.elsestmt.eval()
+
+
+
+
+# class Else_expr:
+#     #WIP
+#     def __init__(self):
+#         self.node = "else"
+#         self.elsedef = "else"
+#         self.startblk = Start_blk()
+#         self.stmtlist = Stmt_list()
+#         self.endblk = End_blk()
+#
+#
+#     def verify(self):
+#         return self.stmtlist.verify()
+#
+#     # def verify(self):
+#     #     if If_expr.comp.verify() and If_expr.stmtlist.verify():
+#     #         if self.stmtlist.verify():
+#     #             return True
+#             return False
+#
+#     def eval(self):
+#         return self.stmtlist.eval()
+#
+#     # def eval(self):
+#     #     if If_expr.comp.eval() > 0:
+#     #         return If_expr.stmtlist.eval()
+#     #     else:
+#     #         return self.stmtlist.eval()
