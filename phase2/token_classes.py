@@ -30,7 +30,8 @@ class Stmt_list:
             return self.left.verify()
     def eval(self):
         if self.left and self.right:
-            return self.left.eval()
+            self.left.eval()
+            return self.right.eval()
 
 
 class Stmt:
