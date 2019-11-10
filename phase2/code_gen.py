@@ -10,9 +10,19 @@ def verify_code(tree, tokens):
         if not good and good is False:  # have to differentiate between 0 and false due to comparators
             print("\""+tokens[0].line[1] + "\" Line: " + str(tokens[0].line[0]))
             return False
-        while tokens:
-            if tokens.pop(0).type == ';':
-                break
+        if tokens[0].value == "if" or tokens[0].value == "for" or tokens[0] == "while":
+            tokens.pop(0)
+            bracket_ctr = 1
+            while bracket_ctr:
+                if tokens[0].value == "if" or tokens[0].value == "for" or tokens[0].value == "while" or tokens[0].value == "else":
+                    bracket_ctr += 1
+                elif tokens[0].value == '}':
+                    bracket_ctr -= 1
+                tokens.pop(0)
+        else:
+            while tokens:
+                if tokens.pop(0).type == ';':
+                    break
         return verify_code(tree.right, tokens)
     return True
 
