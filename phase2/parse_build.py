@@ -13,6 +13,7 @@ def build_tree(tokens, tree):
         tree = tc.Program()
         tree.left = tc.Stmt_list()
         tokens = build_tree(tokens, tree.left)
+        print("End of Build")
         if verify_code(tree, token_copy):
             gen_code(tree)
     elif tree.node == "stmt_list":
@@ -78,16 +79,15 @@ def build_tree(tokens, tree):
         tokens = tokens[1:]
         tokens = build_tree(tokens, tree.child.startparen)
         tokens = build_tree(tokens, tree.child.asmt)
+        tokens = build_tree(tokens, tree.child.endAsmt)
         tokens = build_tree(tokens, tree.child.iexpr)
+        tokens = build_tree(tokens, tree.child.endIexpr)
         tokens = build_tree(tokens, tree.child.reasmt)
         tokens = build_tree(tokens, tree.child.endparen)
         tokens = build_tree(tokens, tree.child.startblk)
         tokens = build_tree(tokens, tree.child.stmtlist)
         tokens = build_tree(tokens, tree.child.endblk)
         return tokens
-
-    elif tree.node == "stmt" and tokens[0].type == "ID" and tokens[0].value == "for":
-        pass
 
     elif tree.node == "stmt" and (tokens[0].type == "Integer" or tokens[0].type == "Double" or
                                           tokens[0].type == "String" or tokens[0].value in variables):

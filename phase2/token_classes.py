@@ -241,7 +241,9 @@ class For_loop:
         self.forstmt = "for"
         self.startparen = Start_paren()
         self.asmt = Asmt()
+        self.endAsmt = End_stmt()
         self.iexpr = I_expr()
+        self.endIexpr = End_stmt()
         self.reasmt = Asmt()
         self.endparen = End_paren()
         self.startblk = Start_blk()
