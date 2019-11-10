@@ -604,18 +604,18 @@ class If_expr:
         self.elsestmt = None
 
     def verify(self):
-        if(self.comp.verify() and self.stmtlist.verify()):
-                if(self.elsestmt != None):
-                    if(self.elsestmt.verify()):
-                        return True #else statement verify
-                    return False #else statement verify
-                return True #no else statement found
-        return False #comparator verify
+        if self.comp.verify() and self.stmtlist.verify():
+                if self.elsestmt != None :
+                    if self.elsestmt.verify():
+                        return True  # else statement verify
+                    return False  # else statement verify
+                return True  # no else statement found
+        return False  # comparator verify
 
     def eval(self):
-        if( self.comp.eval() > 0 ):
+        if self.comp.eval() > 0:
             return self.stmtlist.eval()
-        elif( self.elsestmt != None):
+        elif self.elsestmt != None:
             return self.elsestmt.eval()
         return None #TODO: Handle case where there's no else and if is false
 
@@ -628,8 +628,21 @@ class Else_expr:
         self.stmtlist = Stmt_list()
         self.endblk = End_blk()
 
+
+    # def verify(self):
+    #     return self.stmtlist.verify()
+
     def verify(self):
-        return self.stmtlist.verify()
+        if If_expr.comp.verify() and If_expr.stmtlist.verify():
+            if self.stmtlist.verify():
+                return True
+            return False
+
+    # def eval(self):
+    #     return self.stmtlist.eval()
 
     def eval(self):
-        return self.stmtlist.eval()
+        if If_expr.comp.eval() > 0:
+            return If_expr.stmtlist.eval()
+        else:
+            return self.stmtlist.eval()
