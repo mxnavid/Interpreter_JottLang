@@ -622,7 +622,7 @@ class If_expr:
     #     return None #TODO: Handle case where there's no else and if is false
 
     def verify(self):
-        if self.comp.verify() and self.stmtlist.verify():
+        if self.stmtlist.verify():
             if self.elseblk == Start_paren():      # so if there is else statement we will verify it
                 if self.elsestmt.verify():
                     return True
@@ -631,11 +631,15 @@ class If_expr:
                 return True
         return False
 
+    # def verify(self):
+    #     if self.stmtlist.ver
+
     def eval(self):
         if self.comp.eval() > 0:
             return self.stmtlist.eval()
         else:
-            return self.elsestmt.eval()
+            if self.elsestmt is not None:
+                return self.elsestmt.eval()
 
 
 
