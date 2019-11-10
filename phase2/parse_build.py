@@ -7,6 +7,7 @@ from code_gen import gen_code, verify_code
 variables = {}
 token_copy = {}
 
+
 def build_tree(tokens, tree):
     if not tree:
         tree = tc.Program()
@@ -55,6 +56,10 @@ def build_tree(tokens, tree):
             tokens = build_tree(tokens, tree.child.elsestmt)
             tree.child.elseblkend = tc.End_blk()
         return tokens
+
+    elif tree.node == "stmt" and tokens[0].type == "ID" and tokens[0].value == "else":
+        print("ERROR: There is no corresponding if with this else statement")
+        sys.exit()
 
     elif tree.node == "stmt" and tokens[0].type == "ID" and tokens[0].value == "while":
         tree.child = tc.While_loop()
