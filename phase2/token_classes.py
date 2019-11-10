@@ -1,6 +1,7 @@
 # token classes
 variables = {}
 
+
 class Token:
     def __init__(self):
         self.type = ""
@@ -13,6 +14,7 @@ class Program:
         self.node = "program"
         self.left = Stmt_list()
         self.right = "$$"
+
     def verify(self):
         return self.left.verify()
 
@@ -25,9 +27,11 @@ class Stmt_list:
         self.node = "stmt_list"
         self.left = None
         self.right = None
+
     def verify(self):
         if self.left and self.right:
             return self.left.verify()
+
     def eval(self):
         if self.left and self.right:
             self.left.eval()
@@ -39,8 +43,10 @@ class Stmt:
         self.node = "stmt"
         self.left = None
         self.right = None
+
     def verify(self):
         return self.left.verify()
+
     def eval(self):
         self.left.eval()
 
@@ -49,6 +55,7 @@ class Stmt_single:
     def __init__(self):
         self.node = "stmt"
         self.child = None
+
     def verify(self):
         return self.child.verify()
 
@@ -73,15 +80,18 @@ class End_paren:
         self.node = "end_paren"
         self.child = ")"
 
+
 class Start_blk:
     def __init__(self):
         self.node = "start_blk"
         self.child = "{"
 
+
 class End_blk:
     def __init__(self):
         self.node = "end_blk"
         self.child = "}"
+
 
 class Char:
     def __init__(self):
@@ -117,17 +127,13 @@ class Sign:
     def __init__(self):
         self.node = "sign"
         self.child = None
+
     def verify(self):
         return self.child.verify()
+
     def eval(self):
         return self.child.eval()
-"""
-class Id:
-    def __init__(self):
-        self.node = "id"
-        self.left = L_char()
-        self.right = [str(),None]
-"""
+
 
 class Print:
     def __init__(self):
@@ -142,6 +148,7 @@ class Print:
 
     def eval(self):
         print(self.expr.eval())
+
 
 class S_Expr_Concat:
     def __init__(self):
@@ -158,8 +165,6 @@ class S_Expr_Concat:
 
     def eval(self):
         return self.expr1.eval()+self.expr2.eval()
-
-
 
 
 class S_Expr_CharAt:
@@ -181,6 +186,7 @@ class S_Expr_CharAt:
         pos = int(self.expr2.eval())
         given_string = str(self.expr1.eval())
         return given_string[pos]
+
 
 class Asmt:
     def __init__(self):
@@ -218,15 +224,16 @@ class While_loop:
         self.endblk = End_blk()
 
     def verify(self):
-        if(self.comp.verify()):
-            if(self.stmtlist.verify()):
+        if self.comp.verify():
+            if self.stmtlist.verify():
                 return True
 
         return False
 
     def eval(self):
-        while(self.comp):
+        while self.comp:
             self.stmtlist.eval()
+
 
 class For_loop:
     def __init__(self):
@@ -242,17 +249,18 @@ class For_loop:
         self.endblk = End_blk()
 
     def verify(self):
-        if(self.asmt.verify() and self.iexpr.verify() and self.reasmt.verify()):
-            if(self.stmtlist.verify()):
+        if self.asmt.verify() and self.iexpr.verify() and self.reasmt.verify():
+            if self.stmtlist.verify():
                 return True
 
         return False
 
     def eval(self):
         #TODO: figure out how to use Python's for loop (x in range of initial value to end value in i_expr) 
-        while(self.iexpr.eval()):
+        while self.iexpr.eval():
             self.stmtlist.eval()
             self.reasmt.eval()
+
 
 class Id:
     def __init__(self):
@@ -271,6 +279,7 @@ class Id:
         else:
             return self.child
 
+
 class Expr:
     def __init__(self):
         self.node = "expr"
@@ -282,6 +291,7 @@ class Expr:
 
     def eval(self):
         return self.expr.eval()
+
 
 class I_expr:
     def __init__(self):
@@ -297,6 +307,7 @@ class I_expr_single(I_expr):
 
     def eval(self):
         return self.child.eval()
+
 
 class I_expr_triple_comp(I_expr):
     def __init__(self):
@@ -379,6 +390,7 @@ class I_expr_triple_comp(I_expr):
             else:
                 return 0
 
+
 class I_expr_triple(I_expr):
     def __init__(self):
         super().__init__()
@@ -425,6 +437,7 @@ class I_expr_triple(I_expr):
         else:  # op == ^
             return left ** right
 
+
 class D_expr:
     def __init__(self):
         self.node = "d_expr"
@@ -440,6 +453,7 @@ class D_expr_single(D_expr):
 
     def eval(self):
         return self.child.eval()
+
 
 class D_expr_triple(D_expr):
     def __init__(self):
@@ -509,6 +523,7 @@ class Op:
     def eval(self):
         return self.op.eval()
 
+
 class Dbl:
     #WIP
     def __init__(self):
@@ -533,6 +548,7 @@ class Dbl:
                 print("Syntax Error: Type mismatch: Expected Float got: String",end =", ")
 
             return "-"
+
     def eval(self):
         if self.sign.child == "-":
             return float(self.dbl) * -1
@@ -590,6 +606,7 @@ class Str_literal:
     def eval(self):
         return self.child.replace("\"", "")
 
+
 class If_expr:
     #WIP
     def __init__(self):
@@ -604,23 +621,6 @@ class If_expr:
         self.elsestmt = None
         self.elseblkend = None
 
-
-    # def verify(self):
-    #     if self.comp.verify() and self.stmtlist.verify():
-    #             if self.elsestmt != None :
-    #                 if self.elsestmt.verify():
-    #                     return True  # else statement verify
-    #                 return False  # else statement verify
-    #             return True  # no else statement found
-    #     return False  # comparator verify
-
-    # def eval(self):
-    #     if self.comp.eval() > 0:
-    #         return self.stmtlist.eval()
-    #     elif self.elsestmt != None:
-    #         return self.elsestmt.eval()
-    #     return None #TODO: Handle case where there's no else and if is false
-
     def verify(self):
         if self.stmtlist.verify():
             if self.elseblk == Start_paren():      # so if there is else statement we will verify it
@@ -631,43 +631,9 @@ class If_expr:
                 return True
         return False
 
-    # def verify(self):
-    #     if self.stmtlist.ver
-
     def eval(self):
         if self.comp.eval() > 0:
             return self.stmtlist.eval()
         else:
             if self.elsestmt is not None:
                 return self.elsestmt.eval()
-
-
-
-
-# class Else_expr:
-#     #WIP
-#     def __init__(self):
-#         self.node = "else"
-#         self.elsedef = "else"
-#         self.startblk = Start_blk()
-#         self.stmtlist = Stmt_list()
-#         self.endblk = End_blk()
-#
-#
-#     def verify(self):
-#         return self.stmtlist.verify()
-#
-#     # def verify(self):
-#     #     if If_expr.comp.verify() and If_expr.stmtlist.verify():
-#     #         if self.stmtlist.verify():
-#     #             return True
-#             return False
-#
-#     def eval(self):
-#         return self.stmtlist.eval()
-#
-#     # def eval(self):
-#     #     if If_expr.comp.eval() > 0:
-#     #         return If_expr.stmtlist.eval()
-#     #     else:
-#     #         return self.stmtlist.eval()

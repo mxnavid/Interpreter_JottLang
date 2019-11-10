@@ -68,6 +68,20 @@ def build_tree(tokens, tree):
         return tokens
 
     elif tree.node == "stmt" and tokens[0].type == "ID" and tokens[0].value == "for":
+        print("For Loop Detected")
+        tree.child = tc.For_loop()
+        tokens = tokens[1:]
+        tokens = build_tree(tokens, tree.child.startparen)
+        tokens = build_tree(tokens, tree.child.asmt)
+        tokens = build_tree(tokens, tree.child.iexpr)
+        tokens = build_tree(tokens, tree.child.reasmt)
+        tokens = build_tree(tokens, tree.child.endparen)
+        tokens = build_tree(tokens, tree.child.startblk)
+        tokens = build_tree(tokens, tree.child.stmtlist)
+        tokens = build_tree(tokens, tree.child.endblk)
+        return tokens
+
+    elif tree.node == "stmt" and tokens[0].type == "ID" and tokens[0].value == "for":
         pass
 
     elif tree.node == "stmt" and (tokens[0].type == "Integer" or tokens[0].type == "Double" or
