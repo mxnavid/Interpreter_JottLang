@@ -214,20 +214,16 @@ class Asmt:
 class While_loop:
     def __init__(self):
         self.node = "while"
-        self.type = None
-        self.whilestmt = "while"
         self.startparen = Start_paren()
-        self.comp = I_expr
+        self.comp = I_expr()
         self.endparen = End_paren()
         self.startblk = Start_blk()
-        self.stmtlist = Stmt_list
+        self.stmtlist = Stmt_list()
         self.endblk = End_blk()
 
     def verify(self):
-        if self.comp.verify():
-            if self.stmtlist.verify():
-                return True
-
+        if self.stmtlist.verify():
+            return True
         return False
 
     def eval(self):
@@ -238,7 +234,6 @@ class While_loop:
 class For_loop:
     def __init__(self):
         self.node = "for"
-        self.forstmt = "for"
         self.startparen = Start_paren()
         self.asmt = Asmt()
         self.endAsmt = End_stmt()
