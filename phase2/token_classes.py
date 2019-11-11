@@ -634,3 +634,32 @@ class If_expr:
         else:
             if self.elsestmt is not None:
                 return self.elsestmt.eval()
+
+class P_List():
+    def __init__(self):
+        self.node = "p_list"
+
+    def verify(self):
+        return True
+
+    def eval(self):
+        return 1
+
+
+
+class F_Call:
+    def __init__(self):
+        self.node = "f_call"
+        self.f_id = Id()
+        self.startParen = Start_paren()
+        self.p_list = P_List()
+        self.endParen = End_paren()
+
+    def verify(self):
+        return True
+
+    def eval(self):
+        return 1
+
+
+
