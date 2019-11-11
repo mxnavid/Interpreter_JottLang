@@ -227,7 +227,7 @@ class While_loop:
         return False
 
     def eval(self):
-        while self.comp:
+        while self.comp.expr.eval():
             self.stmtlist.eval()
 
 

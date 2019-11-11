@@ -600,17 +600,29 @@ def build_tree(tokens, tree):
         tree.str = tokens[0].value
         return tokens[1:]
 
+
     elif tree.node == "i_expr":
         if tokens[0].type == "ID":
-            tree.child = tc.Id()
-            tree.child.child = tokens[0].value
+            if tokens[1].type in comp_operators:
+                tree.expr = tc.I_expr_triple_comp()
+                tree.expr.left = tc.Id()
+                tokens = build_tree(tokens, tree.expr.left)
+                tree.expr.op = tc.Op()
+                tokens = build_tree(tokens, tree.expr.op)
+                tree.expr.right = tc.Int()
+                tokens = build_tree(tokens, tree.expr.right)
+            else:
+                tree.child = tc.Id()
+                tree.child.child = tokens[0].value
+                return tokens[1:]
         else:
             tree.child = tc.Int()
             if tokens[0].type == "-" or tokens[0].type == "+":
                 tree.child.sign.child = tokens[0].value
                 tokens = tokens[1:]
             tree.child.int = tokens[0].value
-        return tokens[1:]
+            return tokens[1:]
+        # return tokens[1:]
 
     elif tree.node == 'dbl':
         if tokens[0].type == "ID":
