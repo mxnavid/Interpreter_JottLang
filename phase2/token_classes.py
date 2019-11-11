@@ -203,7 +203,7 @@ class Asmt:
         else:
             var = self.id.verify()
             val = self.expr.verify()
-            if val:
+            if val != None:
                 variables[var] = val
         return val
 

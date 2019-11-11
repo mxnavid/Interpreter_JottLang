@@ -13,7 +13,6 @@ def build_tree(tokens, tree):
         tree = tc.Program()
         tree.left = tc.Stmt_list()
         tokens = build_tree(tokens, tree.left)
-        print("End of Build")
         if verify_code(tree, token_copy):
             gen_code(tree)
     elif tree.node == "stmt_list":
