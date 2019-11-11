@@ -74,16 +74,13 @@ def build_tree(tokens, tree):
         return tokens
 
     elif tree.node == "stmt" and tokens[0].type == "ID" and tokens[0].value == "for":
-        print("For Loop Detected")
         tree.child = tc.For_loop()
         tokens = tokens[1:]
         tokens = build_tree(tokens, tree.child.startparen)
         tokens = build_tree(tokens, tree.child.asmt)
-        tokens = build_tree(tokens, tree.child.endAsmt)
         tokens = build_tree(tokens, tree.child.iexpr)
         tokens = build_tree(tokens, tree.child.endIexpr)
         tokens = build_tree(tokens, tree.child.reasmt)
-        tokens = build_tree(tokens, tree.child.endparen)
         tokens = build_tree(tokens, tree.child.startblk)
         tokens = build_tree(tokens, tree.child.stmtlist)
         tokens = build_tree(tokens, tree.child.endblk)
@@ -220,6 +217,148 @@ def build_tree(tokens, tree):
                         tree.child.expr = tc.D_expr_single()
                         tokens = build_tree(tokens, tree.child.expr)
                         tokens = build_tree(tokens, tree.child.end)
+                    else:
+                        try:
+                            int(tokens[0].value)
+                            print("Syntax Error: Invalid type in re-assignment: Expected Float got Integer, \"" + tokens[0].line[
+                                1].replace('\n','"') + " Line: " + str(tokens[0].line[0]))
+
+                        except ValueError:
+                            print("Syntax Error: Invalid type in re-assignment: Expected Float got String, \"" + tokens[0].line[
+                                1].replace('\n','"') + " Line: " + str(tokens[0].line[0]))
+                        sys.exit()
+
+        return tokens
+    elif tree.node == "asmt" and (tokens[0].type == "Integer" or tokens[0].type == "Double" or
+                                          tokens[0].type == "String" or tokens[0].value in variables):
+        if tokens[0].value not in variables:
+            tree.type = tokens[0].type
+            variables[tokens[1].value] = tokens[0].type
+            tokens = tokens[1:]
+        else:
+            tree.type = variables[tokens[0].value]
+        tokens = build_tree(tokens, tree.id)
+        if tokens[0].type == "=":
+            tokens = tokens[1:]
+            if tree.type == "String":
+                if tokens[0].type == "Number":
+                    if '.' in tokens[0].value:
+                        print("Syntax Error: Invalid type in re-assignment: Expected String got Float, \"" +
+                              tokens[0].line[
+                                  1].replace('\n', '"') + " Line: " + str(tokens[0].line[0]))
+                    else:
+                        print("Syntax Error: Invalid type in re-assignment: Expected String got Integer, \"" +
+                              tokens[0].line[
+                                  1].replace('\n', '"') + " Line: " + str(tokens[0].line[0]))
+                    sys.exit()
+                tree.expr = tc.S_expr()
+                tokens = build_tree(tokens, tree.expr)
+                tokens = tokens[1:]
+            elif tree.type == "Integer":
+                if tokens[0].type == "Str":
+                    if tokens[1].type in comp_operators:
+                        tree.expr = tc.I_expr_triple_comp()
+                        tree.expr.left = tc.Str()
+                        tokens = build_tree(tokens, tree.expr.left)
+                        tree.expr.op = tc.Op()
+                        tokens = build_tree(tokens, tree.expr.op)
+                        tree.expr.right = tc.Str()
+                        tokens = build_tree(tokens, tree.expr.right)
+                        tokens = tokens[1:]
+                    else:
+                        if tokens[1].type == ';':
+                            print("Syntax Error: Invalid type in re-assignment: Expected Integer got String, \"" + tokens[0].line[
+                                1].replace('\n','"') + " Line: " + str(tokens[0].line[0]))
+                        else:
+                            print("Syntax Error: Expected , got " + str(tokens[0].value) + ", \"" + tokens[0].line[
+                                1] + "\" Line: " + str(tokens[0].line[0]))
+                        sys.exit()
+                elif tokens[0].type == "Number" and '.' in tokens[0].value:
+                    if tokens[1].type in comp_operators:
+                        tree.expr = tc.I_expr_triple_comp()
+                        tree.expr.left = tc.Dbl()
+                        tokens = build_tree(tokens, tree.expr.left)
+                        tree.expr.op = tc.Op()
+                        tokens = build_tree(tokens, tree.expr.op)
+                        tree.expr.right = tc.Dbl()
+                        tokens = build_tree(tokens, tree.expr.right)
+                        tokens = tokens[1:]
+                    else:
+                        if tokens[1].type == ';':
+                            print("Syntax Error: Invalid type in re-assignment: Expected Integer got Float, \"" + tokens[0].line[
+                                1].replace('\n','"') + " Line: " + str(tokens[0].line[0]))
+                        else:
+                            print("Syntax Error: Expected , got " + str(tokens[0].value) + ", \"" + tokens[0].line[
+                                1] + "\" Line: " + str(tokens[0].line[0]))
+                        sys.exit()
+                else:
+                    if tokens[1].type in math_operators:
+                        if tokens[3].type in math_operators:
+                            tree.expr = tc.I_expr_triple()
+                            last = next(i for i, v in enumerate(tokens) if (v.type == ")" or v.type == ";")) - 1
+                            tree.expr.right = tc.Int()
+                            tree.expr.right.int = tokens.pop(last).value
+                            tree.expr.op = tc.Op()
+                            tree.expr.op.op = tokens.pop(last - 1).value
+                            if tokens[1].type in math_operators:
+                                tree.expr.left = tc.I_expr_triple()
+                            else:
+                                tree.expr.left = tc.Int()
+                            tokens = build_tree(tokens, tree.expr.left)
+                        else:
+                            tree.expr = tc.I_expr_triple()
+                            if(tokens[0].value in variables):
+                                tree.expr.left = tc.Id()
+                            else:
+                                tree.expr.left = tc.Int()
+                            tokens = build_tree(tokens, tree.expr.left)
+                            tree.expr.op = tc.Op()
+                            tokens = build_tree(tokens, tree.expr.op)
+                            tree.expr.right = tc.Int()
+                            tokens = build_tree(tokens, tree.expr.right)
+                        tokens = tokens[1:]
+                    elif tokens[1].type in comp_operators:
+                        tree.expr = tc.I_expr_triple_comp()
+                        tree.expr.left = tc.Int()
+                        tokens = build_tree(tokens, tree.expr.left)
+                        tree.expr.op = tc.Op()
+                        tokens = build_tree(tokens, tree.expr.op)
+                        tree.expr.right = tc.Int()
+                        tokens = build_tree(tokens, tree.expr.right)
+                        tokens = tokens[1:]
+                    else:
+                        tree.expr = tc.I_expr_single()
+                        tokens = build_tree(tokens, tree.expr)
+                        tokens = build_tree(tokens, tree.end)
+
+            elif tree.type == "Double":
+                if tokens[1].type in math_operators:
+                    if tokens[3].type in math_operators:
+                        tree.expr = tc.D_expr_triple()
+                        last = next(i for i, v in enumerate(tokens) if (v.type == ")" or v.type == ";")) - 1
+                        tree.expr.right = tc.Dbl()
+                        tree.expr.right.dbl = tokens.pop(last).value
+                        tree.expr.op = tc.Op()
+                        tree.expr.op.op = tokens.pop(last - 1).value
+                        if tokens[1].type in math_operators:
+                            tree.expr.left = tc.D_expr_triple()
+                        else:
+                            tree.expr.left = tc.Dbl()
+                        tokens = build_tree(tokens, tree.expr.left)
+                    else:
+                        tree.expr = tc.D_expr_triple()
+                        tree.expr.left = tc.Dbl()
+                        tokens = build_tree(tokens, tree.expr.left)
+                        tree.expr.op = tc.Op()
+                        tokens = build_tree(tokens, tree.expr.op)
+                        tree.expr.right = tc.Dbl()
+                        tokens = build_tree(tokens, tree.expr.right)
+                    tokens = tokens[1:]
+                else:
+                    if '.' in tokens[0].value:
+                        tree.expr = tc.D_expr_single()
+                        tokens = build_tree(tokens, tree.expr)
+                        tokens = build_tree(tokens, tree.end)
                     else:
                         try:
                             int(tokens[0].value)

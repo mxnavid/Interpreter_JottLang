@@ -246,15 +246,14 @@ class For_loop:
         self.endblk = End_blk()
 
     def verify(self):
-        if self.asmt.verify() and self.iexpr.verify() and self.reasmt.verify():
+        if self.asmt.verify() and self.iexpr.expr.verify() and self.reasmt.verify():
             if self.stmtlist.verify():
                 return True
 
         return False
 
     def eval(self):
-        #TODO: figure out how to use Python's for loop (x in range of initial value to end value in i_expr) 
-        while self.iexpr.eval():
+        while self.iexpr.expr.eval():
             self.stmtlist.eval()
             self.reasmt.eval()
 
