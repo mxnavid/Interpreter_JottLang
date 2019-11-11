@@ -55,6 +55,7 @@ def build_tree(tokens, tree):
             tree.child.elsestmt = tc.Stmt_list()
             tokens = build_tree(tokens, tree.child.elsestmt)
             tree.child.elseblkend = tc.End_blk()
+            tokens = build_tree(tokens, tree.child.elseblkend)
         return tokens
 
     elif tree.node == "stmt" and tokens[0].type == "ID" and tokens[0].value == "else":
