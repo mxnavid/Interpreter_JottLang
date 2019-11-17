@@ -475,6 +475,21 @@ def build_tree(tokens, tree):
             else:
                 tree.expr = tc.I_expr_single()
                 tokens = build_tree(tokens, tree.expr)
+        elif (type == "Double" or type == "String") and tokens[1].type in comp_operators:
+            tree.expr = tc.I_expr_triple_comp()
+            tree.expr.left = tc.Id()
+            tokens = build_tree(tokens, tree.expr.left)
+            tree.expr.op = tc.Op()
+            tokens = build_tree(tokens, tree.expr.op)
+            if tokens[1].value == ';' or tokens[1].value == ')' or tokens[1].value == '(':
+                if tokens[0].type == "ID":
+                    tree.expr.right = tc.Id()
+                else:
+                    if type == "Double":
+                        tree.expr.right = tc.Dbl()
+                    elif type == "String":
+                        tree.expr.right = tc.Str()
+                tokens = build_tree(tokens, tree.expr.right)
 
         elif type == "Double":
             # Create double expression

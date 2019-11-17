@@ -10,11 +10,11 @@ def main():
         print("Usage: python jott.py fileToTest.j")
         return
 
-    #tokens = pb.parser(sys.argv[1])
-    tokens = pb.parser("test\secondPhase\instructor_samples\input\prog12.j")
+    tokens = pb.parser(sys.argv[1])
+    #  tokens = pb.parser("test\secondPhase\instructor_samples\input\prog12.j")
     if tokens:
-        #for thing in tokens:
-        #    print(thing.type)
+        #  for thing in tokens:
+        #      print(thing.type)
         pb.build_tree(tokens, None)
 
 
