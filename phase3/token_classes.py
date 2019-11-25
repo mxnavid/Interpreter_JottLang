@@ -1,6 +1,6 @@
 # token classes
 variables = {}
-
+scope = "_global"
 
 class Token:
     def __init__(self):
@@ -198,17 +198,17 @@ class Asmt:
         self.end = End_stmt()
 
     def verify(self):
-        if self.id.child in variables:
+        if self.id.child+scope in variables:
             return True
         else:
             var = self.id.verify()
             val = self.expr.verify()
             if val != None:
-                variables[var] = val
+                variables[var+scope] = val
         return val
 
     def eval(self):
-        variables[self.id.child] = self.expr.eval()
+        variables[self.id.child+scope] = self.expr.eval()
 
 
 class While_loop:
@@ -264,14 +264,14 @@ class Id:
         self.child = None
 
     def verify(self):
-        if self.child in variables:
-            return variables[self.child]
+        if self.child+scope in variables:
+            return variables[self.child+scope]
         else:
             return self.child
 
     def eval(self):
-        if self.child in variables:
-            return variables[self.child]
+        if self.child+scope in variables:
+            return variables[self.child+scope]
         else:
             return self.child
 
