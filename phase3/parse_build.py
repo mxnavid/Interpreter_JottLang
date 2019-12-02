@@ -58,6 +58,16 @@ def build_tree(tokens, tree):
             tokens = build_tree(tokens, tree.child.elseblkend)
         return tokens
 
+    elif tree.node == "stmt" and (tokens[0].type == "String" or tokens[0].type == "Integer" or tokens[0].type == "Void")  and tokens[2].value == "(":
+        tree.child == tc.Func()
+        tokens = build_tree(tokens, tree.child.f_id)
+        tokens = build_tree(tokens, tree.child.startParen)
+        tokens = build_tree(tokens, tree.child.p_list)
+        tokens = build_tree(tokens, tree.child.endParen)
+        tokens = build_tree(tokens, tree.child.startblk)
+        # tokens = build_tree(tokens, tree.child.func_stmt)
+        tokens = build_tree(tokens, tree.child.endblk)
+
     elif tree.node == "stmt" and tokens[0].type == "ID" and tokens[0].value == "else":
         print("ERROR: There is no corresponding if with this else statement")
         sys.exit()
@@ -875,7 +885,7 @@ def parser(file_name):
     state = accepts(dfa, state, 'EOF')
     if state == "break_b":
         token_i.line = [line_num, line]
-        if token_i.value == "Integer" or token_i.value == "Double" or token_i.value == "String":
+        if token_i.value == "Integer" or token_i.value == "Double" or token_i.value == "String" or token_i.value == "Void":
             token_i.type = token_i.value
         else:
             token_i.type = term_tokens[last_state]
