@@ -838,7 +838,7 @@ def parser(file_name):
                     if last_state == 14:
                         print("Syntax Error: Missing \", \"" + token_i.line[1] + "\" Line: " + str(token_i.line[0]))
                         return False
-                    if token_i.value == "Integer" or token_i.value == "Double" or token_i.value == "String" \
+                    if token_i.value == "Integer" or token_i.value == "Double" or token_i.value == "Void" or token_i.value == "String" \
                             or token_i.value == "print" or token_i.value == "concat" or token_i.value == "charAt":
                         token_i.type = token_i.value
                     else:
@@ -848,7 +848,7 @@ def parser(file_name):
                     token_i.value = char
                 else:
                     token_i.line = [line_num, line]
-                    if token_i.value == "Integer" or token_i.value == "Double" or token_i.value == "String" \
+                    if token_i.value == "Integer" or token_i.value == "Double"or token_i.value == "Void" or token_i.value == "String" \
                             or token_i.value == "print" or token_i.value == "concat" or token_i.value == "charAt":
                         token_i.type = token_i.value
                     else:
@@ -860,7 +860,7 @@ def parser(file_name):
                 last_state = state
                 state = accepts(dfa, state, char)
             if state == "break_a":
-                if token_i.value == "Integer" or token_i.value == "Double" or token_i.value == "String" \
+                if token_i.value == "Integer" or token_i.value == "Double" or token_i.value == "Void" or token_i.value == "String" \
                         or token_i.value == "print" or token_i.value == "concat" or token_i.value == "charAt":
                     token_i.type = token_i.value
                 else:
@@ -875,7 +875,7 @@ def parser(file_name):
     state = accepts(dfa, state, 'EOF')
     if state == "break_b":
         token_i.line = [line_num, line]
-        if token_i.value == "Integer" or token_i.value == "Double" or token_i.value == "String":
+        if token_i.value == "Integer" or token_i.value == "Double" or token_i.value == "String"or token_i.value == "Void":
             token_i.type = token_i.value
         else:
             token_i.type = term_tokens[last_state]
