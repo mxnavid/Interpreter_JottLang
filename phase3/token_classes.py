@@ -1,5 +1,8 @@
 # token classes
 variables = {}
+func_dict = {}
+func_params = {}
+
 scope = "_global"
 
 class Token:
