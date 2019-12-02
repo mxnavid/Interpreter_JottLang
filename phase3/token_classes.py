@@ -647,7 +647,23 @@ class P_List():
     def eval(self):
         return 1
 
+class Func():
+    def __init__(self):
+        self.node = "func"
+        self.type = None
+        self.f_id = Id()
+        self.startParen = Start_paren()
+        self.p_list = P_List()
+        self.endParen = End_paren()
+        self.startblk = Start_blk()
+        #self.func_stmt = func_stmt()
+        self.endblk = End_blk()
 
+    def verify(self):
+        return True
+
+    def eval(self):
+        return 1
 
 class F_Call:
     def __init__(self):
