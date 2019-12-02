@@ -1,4 +1,4 @@
-String foo(String bar){
+Void foo(String bar){
     print(bar);
 }
 

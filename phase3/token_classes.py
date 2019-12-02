@@ -640,6 +640,9 @@ class If_expr:
 class P_List():
     def __init__(self):
         self.node = "p_list"
+        self.type = None
+        self.p_id = Id()
+        self.p_list = None
 
     def verify(self):
         return True
