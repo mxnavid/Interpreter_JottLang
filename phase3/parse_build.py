@@ -71,7 +71,8 @@ def build_tree(tokens, tree):
             tokens = build_tree(tokens, tree.child.elseblkend)
         return tokens
 
-    elif tree.node == "stmt" and tokens[0].type == "ID" and tokens[1].value == "(":
+    elif tree.node == "stmt" and tokens[0].type == "ID" and tokens[1].value == "(" \
+            and tokens[0].value != "while" and tokens[0].value != "for":
         tree.child = tc.F_Call()
         tokens = build_tree(tokens, tree.child.f_id)
         tokens = build_tree(tokens, tree.child.startParen)
