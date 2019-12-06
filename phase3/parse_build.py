@@ -837,10 +837,10 @@ def build_tree(tokens, tree):
                 tokens = build_tree(tokens, tree.p_list)
         return tokens
     elif tree.node == 'fc_p_list':
-        tree.expr = tokens[0].value
+        raw_val = tokens[0].value.replace("\'","")
+        tree.expr.append(raw_val.replace("\"",""))
         tokens = tokens[1:]
         if tokens[0].value == ',':
-            tree.fc_p_list = tc.FC_P_List()
             tokens = tokens[1:]
             tokens = build_tree(tokens,tree.fc_p_list)
         return tokens

@@ -656,8 +656,8 @@ class P_List():
 class FC_P_List():
     def __init__(self):
         self.node = "fc_p_list"
-        self.expr = None
-        self.fc_p_list = None
+        self.expr = []
+        #self.fc_p_list = None
 
     def verify(self):
         self.expr.verify()
@@ -726,8 +726,10 @@ class F_Call:
     def eval(self):
         global scope
         scope = "_local"
+        index = 0
         for var in func_params[self.f_id.child]:
-            print("SET VARS HERE")
+            variables[var+scope] = self.fc_p_list.expr[index]
+            index += 1
         temp = func_dict[self.f_id.child].eval()
         scope = "_global"
         return temp
