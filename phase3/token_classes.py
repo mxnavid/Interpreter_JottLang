@@ -718,6 +718,7 @@ class F_Call:
         self.startParen = Start_paren()
         self.fc_p_list = FC_P_List()
         self.endParen = End_paren()
+        self.end = End_stmt()
 
     def verify(self):
         return self.f_id.child in func_dict

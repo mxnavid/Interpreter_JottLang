@@ -30,6 +30,19 @@ def build_tree(tokens, tree):
             tokens = build_tree(tokens, tree.right)
         else:
             return tokens[1:]
+    elif tree.node == "func_stmt":
+            if tokens[0].type == 'concat' or tokens[0].type == 'charAt':
+                tree.left = tc.Stmt()
+                tokens = build_tree(tokens, tree.left)
+            elif tokens[0].value == "}":
+                return tokens
+            else:
+                tree.left = tc.Stmt_single()
+                tokens = build_tree(tokens, tree.left)
+
+            tree.right = tc.func_stmt()
+            tokens = build_tree(tokens, tree.right)
+
     elif tree.node == "stmt" and tokens[0].type == "print":
         tree.child = tc.Print()
         tokens = tokens[1:]
@@ -58,7 +71,16 @@ def build_tree(tokens, tree):
             tokens = build_tree(tokens, tree.child.elseblkend)
         return tokens
 
-    elif tree.node == "stmt" and (tokens[0].type == "String" or tokens[0].type == "Integer" or tokens[0].type == "Void")  and tokens[2].value == "(":
+    elif tree.node == "stmt" and tokens[0].type == "ID" and tokens[1].value == "(":
+        tree.child = tc.F_Call()
+        tokens = build_tree(tokens, tree.child.f_id)
+        tokens = build_tree(tokens, tree.child.startParen)
+        tokens = build_tree(tokens, tree.child.fc_p_list)
+        tokens = build_tree(tokens, tree.child.endParen)
+        tokens = build_tree(tokens, tree.child.end)
+
+        return tokens
+    elif tree.node == "stmt" and (tokens[0].type == "String" or tokens[0].type == "Integer" or tokens[0].type == "Void") and tokens[2].value == "(":
         tree.child = tc.Func()
         tokens = tokens[1:]
         tokens = build_tree(tokens, tree.child.f_id)
@@ -66,8 +88,9 @@ def build_tree(tokens, tree):
         tokens = build_tree(tokens, tree.child.p_list)
         tokens = build_tree(tokens, tree.child.endParen)
         tokens = build_tree(tokens, tree.child.startblk)
-        # tokens = build_tree(tokens, tree.child.func_stmt)
+        tokens = build_tree(tokens, tree.child.func_stmt)
         tokens = build_tree(tokens, tree.child.endblk)
+        return tokens
 
     elif tree.node == "stmt" and tokens[0].type == "ID" and tokens[0].value == "else":
         print("ERROR: There is no corresponding if with this else statement")
@@ -801,6 +824,26 @@ def build_tree(tokens, tree):
         tree.child = tc.Str_literal()
         tree.child.child = tokens[0].value
         return tokens[1:]
+    elif tree.node == "p_list":
+        if tokens[0].value == "String" or tokens[0].value == "Integer" or tokens[0].value == "Double":
+            tree.type = tokens[0].value
+            tokens = tokens[1:]
+            tree.p_id.child = tokens[0].value
+            variables[tokens[0].value] = tree.type
+            tokens = tokens[1:]
+            if tokens[0].value == ',':
+                tree.p_list = tc.P_List()
+                tokens = tokens[1:]
+                tokens = build_tree(tokens, tree.p_list)
+        return tokens
+    elif tree.node == 'fc_p_list':
+        tree.expr = tokens[0].value
+        tokens = tokens[1:]
+        if tokens[0].value == ',':
+            tree.fc_p_list = tc.FC_P_List()
+            tokens = tokens[1:]
+            tokens = build_tree(tokens,tree.fc_p_list)
+        return tokens
 
     return tokens
 
