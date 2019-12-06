@@ -662,14 +662,14 @@ class Func():
         self.p_list = P_List()
         self.endParen = End_paren()
         self.startblk = Start_blk()
-        #self.func_stmt = func_stmt()
+        self.func_stmt = func_stmt()
         self.endblk = End_blk()
 
     def verify(self):
         scope = "_local"
         func_params[self.f_id.child] = []
         self.p_list.verify(self.f_id.child)
-        #func_dict[self.f_id.child] = self.func_stmt
+        func_dict[self.f_id.child] = self.func_stmt
         scope = "_global"
         return True
 
@@ -681,6 +681,7 @@ class func_stmt:
         self.node = "func_stmt"
         self.left = None
         self.right = None
+        self.rtrn = None
 
     def verify(self):
         return 1
@@ -688,10 +689,12 @@ class func_stmt:
         #    return self.left.verify()
 
     def eval(self):
-        return 1
-        #if self.left and self.right:
-        #    self.left.eval()
-        #    return self.right.eval()
+        if self.left and self.right:
+            self.left.eval()
+            return self.right.eval()
+        elif self.rtrn:
+            return self.rtrn
+
 
 class F_Call:
     def __init__(self):
@@ -708,8 +711,9 @@ class F_Call:
         scope = "_local"
         for var in func_params[self.f_id.child]:
             print("SET VARS HERE")
-        func_dict[self.f_id.child].eval()
+        temp = func_dict[self.f_id.child].eval()
         scope = "_global"
+        return temp
 
 
 
