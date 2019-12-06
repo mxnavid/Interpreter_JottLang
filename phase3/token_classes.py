@@ -694,7 +694,7 @@ class func_stmt:
             self.left.eval()
             return self.right.eval()
         elif self.rtrn:
-            return self.rtrn
+            return self.rtrn.eval()
 
 
 class F_Call:
