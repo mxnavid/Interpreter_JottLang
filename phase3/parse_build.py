@@ -842,7 +842,7 @@ def build_tree(tokens, tree):
         tokens = tokens[1:]
         if tokens[0].value == ',':
             tokens = tokens[1:]
-            tokens = build_tree(tokens,tree.fc_p_list)
+            tokens = build_tree(tokens,tree)
         return tokens
 
     return tokens
