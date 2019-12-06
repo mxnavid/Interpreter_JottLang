@@ -685,9 +685,9 @@ class func_stmt:
         self.rtrn = None
 
     def verify(self):
-        return 1
-        #if self.left and self.right:
-        #    return self.left.verify()
+        if self.left and self.right:
+            return True if self.left.verify() and self.right.verify() else False
+        return True
 
     def eval(self):
         if self.left and self.right:
