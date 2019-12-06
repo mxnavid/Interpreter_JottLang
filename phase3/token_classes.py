@@ -666,6 +666,7 @@ class Func():
         self.endblk = End_blk()
 
     def verify(self):
+        global scope
         scope = "_local"
         func_params[self.f_id.child] = []
         self.p_list.verify(self.f_id.child)
@@ -708,6 +709,7 @@ class F_Call:
         return self.f_id.child in func_dict
 
     def eval(self):
+        global scope
         scope = "_local"
         for var in func_params[self.f_id.child]:
             print("SET VARS HERE")
