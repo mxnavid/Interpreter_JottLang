@@ -36,6 +36,11 @@ def build_tree(tokens, tree):
         elif tokens[0].value == "return":
             #tree.rtrn =
             print("HIT RETURN")
+            tree.child = tc.rtrn()
+            tokens = tokens[1:]
+            tokens = build_tree(tokens, tree.child.expr)
+            tokens = build_tree(tokens, tree.child.end)
+            return tokens
         else:
             if tokens[0].type == 'concat' or tokens[0].type == 'charAt':
                 tree.left = tc.Stmt()

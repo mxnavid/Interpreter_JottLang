@@ -739,3 +739,15 @@ class F_Call:
 
 
 
+
+class rtrn:
+    def __init__(self):
+        self.node = "rtrn"
+        self.print = "rtrn"
+        self.expr = Expr()
+        self.end = End_stmt()
+    def verify(self):
+        return self.expr.verify()
+
+    def eval(self):
+        return (self.expr.eval())
