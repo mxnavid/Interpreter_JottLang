@@ -31,11 +31,15 @@ def build_tree(tokens, tree):
         else:
             return tokens[1:]
     elif tree.node == "func_stmt":
+        if tokens[0].value == "}":
+            return tokens
+        elif tokens[0].value == "return":
+            #tree.rtrn =
+            print("HIT RETURN")
+        else:
             if tokens[0].type == 'concat' or tokens[0].type == 'charAt':
                 tree.left = tc.Stmt()
                 tokens = build_tree(tokens, tree.left)
-            elif tokens[0].value == "}":
-                return tokens
             else:
                 tree.left = tc.Stmt_single()
                 tokens = build_tree(tokens, tree.left)
