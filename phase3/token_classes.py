@@ -748,7 +748,8 @@ class F_Call:
                 if str(self.fc_p_list.expr[index])+"_global" in variables:
                     variables[var+scope] = variables[self.fc_p_list.expr[index]+"_global"]
                 else:
-                    if str(self.fc_p_list.expr[index])+scope in variables:
+                    # The "and" check verifies that our parameters don't have the same name as the value being passed in - that results in None
+                    if str(self.fc_p_list.expr[index])+scope in variables and variables[str(self.fc_p_list.expr[index])+scope] != None:
                         variables[var+scope] = variables[str(self.fc_p_list.expr[index])+scope]
                     else:
                         variables[var+scope] = self.fc_p_list.expr[index]
