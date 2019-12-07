@@ -204,7 +204,7 @@ class Asmt:
         if self.id.child+scope in variables:
             return True
         elif self.type == 'String' and type(self.expr.eval()).__name__ != 'str':
-            print("Syntax Error: " + self.type + " expected but got " + type(self.expr.eval()).__name__)
+            print("Syntax Error: " + self.type + " expected but got " + type(self.expr.eval()).__name__, end=", ")
             # print("Syntax Error: Type mismatch: Expected " + str(type(left).__name__).upper() + " got " + str(
             #     type(right).__name__).upper(), end=", ")
             return False
