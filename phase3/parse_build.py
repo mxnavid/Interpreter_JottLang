@@ -875,7 +875,7 @@ def build_tree(tokens, tree):
             if tokens[0].type == "Number":
                 if '.' in tokens[0].value:
                     tree.expr.append(float(tokens[0].value))
-                elif tokens[1].value == "+" or tokens[1].value == "-":
+                elif tokens[1].value == "+" or tokens[1].value == "-"or tokens[1].value == "*"or tokens[1].value == "/":
                     tree2 = tc.I_expr_triple()
                     tree2.left = tc.Int()
                     tokens = build_tree(tokens, tree2.left)
@@ -884,10 +884,13 @@ def build_tree(tokens, tree):
                     tree2.right = tc.Int()
                     tokens = build_tree(tokens, tree2.right)
                     tree.expr.append(tree2)
+                    if tokens[0].value == ',':
+                        tokens = tokens[1:]
+                        tokens = build_tree(tokens, tree)
                     return tokens
                 else:
                     tree.expr.append(int(tokens[0].value))
-            elif tokens[1].value == "-" or tokens[1].value == "+":
+            elif tokens[1].value == "-" or tokens[1].value == "+"or tokens[1].value == "*"or tokens[1].value == "/":
                 tree2 = tc.I_expr_triple()
                 tree2.left = tc.Id()
                 tokens = build_tree(tokens, tree2.left)
