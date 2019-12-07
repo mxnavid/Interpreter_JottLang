@@ -691,6 +691,7 @@ class Func():
         func_params[self.f_id.child] = []
         self.p_list.verify(self.f_id.child)
         func_dict[self.f_id.child] = self.func_stmt
+       #self.func_stmt.verify()
         scope = "_global"
         return True
 
@@ -708,7 +709,7 @@ class func_stmt:
         if self.left and self.right:
             return True if self.left.verify() and self.right.verify() else False
         elif self.rtrn:
-            print("BLAH")
+            pass
         return True
 
     def eval(self):
@@ -736,10 +737,14 @@ class F_Call:
         scope = "_local"
         index = 0
         for var in func_params[self.f_id.child]:
-            if str(self.fc_p_list.expr[index])+"_global" in variables:
-                variables[var+scope] = variables[self.fc_p_list.expr[index]+"_global"]
+            if (isinstance(self.fc_p_list.expr[index], F_Call)):
+                val = self.fc_p_list.expr[index].eval()
+                variables[var + scope] = val
             else:
-                variables[var+scope] = self.fc_p_list.expr[index]
+                if str(self.fc_p_list.expr[index])+"_global" in variables:
+                    variables[var+scope] = variables[self.fc_p_list.expr[index]+"_global"]
+                else:
+                    variables[var+scope] = self.fc_p_list.expr[index]
             index += 1
         temp = func_dict[self.f_id.child].eval()
         scope = "_global"

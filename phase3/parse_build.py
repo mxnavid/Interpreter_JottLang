@@ -869,7 +869,6 @@ def build_tree(tokens, tree):
                 else:
                     tree.expr.append(int(tokens[0].value))
             elif tokens[1].value == "-":
-                print("Minus buddy")
                 tree2 = tc.I_expr_triple()
                 tree2.left = tc.Id()
                 tokens = build_tree(tokens, tree2.left)
@@ -883,6 +882,12 @@ def build_tree(tokens, tree):
                 pass
             elif tokens[1].value == "<":
                 pass
+            elif tokens[0].type == "ID" and tokens[1].value == "(":
+                inner_call =  tc.F_Call()
+                tokens = build_tree(tokens, inner_call.f_id)
+                tokens = build_tree(tokens, inner_call.startParen)
+                tokens = build_tree(tokens, inner_call.fc_p_list)
+                tree.expr.append(inner_call)
             else:
                 raw_val = tokens[0].value.replace("\'","")
                 tree.expr.append(raw_val.replace("\"",""))
