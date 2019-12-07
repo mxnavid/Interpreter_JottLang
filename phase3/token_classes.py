@@ -748,7 +748,11 @@ class F_Call:
                 if str(self.fc_p_list.expr[index])+"_global" in variables:
                     variables[var+scope] = variables[self.fc_p_list.expr[index]+"_global"]
                 else:
-                    variables[var+scope] = self.fc_p_list.expr[index]
+                    if str(self.fc_p_list.expr[index])+scope in variables:
+                        variables[var+scope] = variables[str(self.fc_p_list.expr[index])+scope]
+                    else:
+                        variables[var+scope] = self.fc_p_list.expr[index]
+                    print(variables)
             index += 1
         temp = func_dict[self.f_id.child][0].eval()
         scope = "_global"
