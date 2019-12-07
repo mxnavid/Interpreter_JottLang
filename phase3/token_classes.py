@@ -731,7 +731,7 @@ class F_Call:
         scope = "_local"
         index = 0
         for var in func_params[self.f_id.child]:
-            if self.fc_p_list.expr[index]+"_global" in variables:
+            if str(self.fc_p_list.expr[index])+"_global" in variables:
                 variables[var+scope] = variables[self.fc_p_list.expr[index]+"_global"]
             else:
                 variables[var+scope] = self.fc_p_list.expr[index]
