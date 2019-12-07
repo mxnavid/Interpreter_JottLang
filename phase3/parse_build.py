@@ -885,7 +885,7 @@ def build_tree(tokens, tree):
                 tokens = build_tree(tokens, tree2.op)
                 tree2.right = tc.Int()
                 tokens = build_tree(tokens, tree2.right)
-                tree.expr.append(tokens)
+                tree.expr.append(tree2)
                 return tokens
             elif tokens[1].value == "+":
                 pass

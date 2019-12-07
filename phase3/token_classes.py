@@ -741,7 +741,7 @@ class F_Call:
         scope = "_local"
         index = 0
         for var in func_params[self.f_id.child]:
-            if (isinstance(self.fc_p_list.expr[index], F_Call)):
+            if (isinstance(self.fc_p_list.expr[index], F_Call)) or isinstance(self.fc_p_list.expr[index], I_expr_triple):
                 val = self.fc_p_list.expr[index].eval()
                 variables[var + scope] = val
             else:
@@ -752,7 +752,6 @@ class F_Call:
                         variables[var+scope] = variables[str(self.fc_p_list.expr[index])+scope]
                     else:
                         variables[var+scope] = self.fc_p_list.expr[index]
-                    print(variables)
             index += 1
         temp = func_dict[self.f_id.child][0].eval()
         scope = "_global"
