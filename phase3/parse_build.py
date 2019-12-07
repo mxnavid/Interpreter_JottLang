@@ -897,10 +897,6 @@ def build_tree(tokens, tree):
                 tokens = build_tree(tokens, tree2.right)
                 tree.expr.append(tree2)
                 return tokens
-            elif tokens[1].value == "+":
-                pass
-            elif tokens[1].value == "<":
-                pass
             elif tokens[0].type == "ID" and tokens[1].value == "(":
                 inner_call =  tc.F_Call()
                 tokens = build_tree(tokens, inner_call.f_id)
