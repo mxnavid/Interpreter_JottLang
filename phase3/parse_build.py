@@ -154,9 +154,18 @@ def build_tree(tokens, tree):
                               tokens[0].line[
                                   1].replace('\n', '"') + " Line: " + str(tokens[0].line[0]))
                     sys.exit()
-                tree.child.expr = tc.S_expr()
-                tokens = build_tree(tokens, tree.child.expr)
-                tokens = tokens[1:]
+
+                elif tokens[0].type == "ID" and tokens[1].type == "(":
+                    tree.child.expr = tc.F_Call()
+                    tokens = build_tree(tokens, tree.child.expr.f_id)
+                    tokens = build_tree(tokens, tree.child.expr.startParen)
+                    tokens = build_tree(tokens, tree.child.expr.fc_p_list)
+                    tokens = build_tree(tokens, tree.child.expr.endParen)
+                    tokens = build_tree(tokens, tree.child.expr.end)
+                else:
+                    tree.child.expr = tc.S_expr()
+                    tokens = build_tree(tokens, tree.child.expr)
+                    tokens = tokens[1:]
             elif tree.child.type == "Integer":
                 if tokens[0].type == "Str":
                     if tokens[1].type in comp_operators:
@@ -868,7 +877,7 @@ def build_tree(tokens, tree):
                     tree.expr.append(float(tokens[0].value))
                 else:
                     tree.expr.append(int(tokens[0].value))
-            elif tokens[1].value == "-":
+            elif tokens[1].value == "-" or tokens[1].value == "+":
                 tree2 = tc.I_expr_triple()
                 tree2.left = tc.Id()
                 tokens = build_tree(tokens, tree2.left)
