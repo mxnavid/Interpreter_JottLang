@@ -645,11 +645,12 @@ class P_List():
         self.p_list = None
 
     def verify(self, func_id):
-        if not self.p_id.child + scope in variables:
-            variables[self.p_id.child+scope] = None
-        func_params[func_id].append(self.p_id.child)
-        if self.p_list:
-            self.p_list.verify(func_id)
+        if self.p_id.child:
+            if not self.p_id.child + scope in variables:
+                variables[self.p_id.child+scope] = None
+            func_params[func_id].append(self.p_id.child)
+            if self.p_list:
+                self.p_list.verify(func_id)
     def eval(self):
         return 1
 
@@ -701,6 +702,8 @@ class func_stmt:
     def verify(self):
         if self.left and self.right:
             return True if self.left.verify() and self.right.verify() else False
+        elif self.rtrn:
+            print("BLAH")
         return True
 
     def eval(self):

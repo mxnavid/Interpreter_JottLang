@@ -34,12 +34,10 @@ def build_tree(tokens, tree):
         if tokens[0].value == "}":
             return tokens
         elif tokens[0].value == "return":
-            #tree.rtrn =
-            print("HIT RETURN")
-            tree.child = tc.rtrn()
+            tree.rtrn = tc.rtrn()
             tokens = tokens[1:]
-            tokens = build_tree(tokens, tree.child.expr)
-            tokens = build_tree(tokens, tree.child.end)
+            tokens = build_tree(tokens, tree.rtrn.expr)
+            tokens = build_tree(tokens, tree.rtrn.end)
             return tokens
         else:
             if tokens[0].type == 'concat' or tokens[0].type == 'charAt':
@@ -229,9 +227,18 @@ def build_tree(tokens, tree):
                         tokens = build_tree(tokens, tree.child.expr.right)
                         tokens = tokens[1:]
                     else:
-                        tree.child.expr = tc.I_expr_single()
-                        tokens = build_tree(tokens, tree.child.expr)
-                        tokens = build_tree(tokens, tree.child.end)
+                        if tokens[0].type == "ID" and tokens[1].type == "(":
+                            tree.child.expr = tc.F_Call()
+                            tokens = build_tree(tokens, tree.child.expr.f_id)
+                            tokens = build_tree(tokens, tree.child.expr.startParen)
+                            tokens = build_tree(tokens, tree.child.expr.fc_p_list)
+                            tokens = build_tree(tokens, tree.child.expr.endParen)
+                            tokens = build_tree(tokens, tree.child.expr.end)
+
+                        else:
+                            tree.child.expr = tc.I_expr_single()
+                            tokens = build_tree(tokens, tree.child.expr)
+                            tokens = build_tree(tokens, tree.child.end)
 
             elif tree.child.type == "Double":
                 if tokens[1].type in math_operators:
@@ -847,12 +854,13 @@ def build_tree(tokens, tree):
                 tokens = build_tree(tokens, tree.p_list)
         return tokens
     elif tree.node == 'fc_p_list':
-        raw_val = tokens[0].value.replace("\'","")
-        tree.expr.append(raw_val.replace("\"",""))
-        tokens = tokens[1:]
-        if tokens[0].value == ',':
+        if tokens[0].value != ")":
+            raw_val = tokens[0].value.replace("\'","")
+            tree.expr.append(raw_val.replace("\"",""))
             tokens = tokens[1:]
-            tokens = build_tree(tokens,tree)
+            if tokens[0].value == ',':
+                tokens = tokens[1:]
+                tokens = build_tree(tokens,tree)
         return tokens
 
     return tokens
