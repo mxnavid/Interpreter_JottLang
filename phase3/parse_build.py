@@ -919,7 +919,7 @@ def accepts(transitions, initial, s):
         state = transitions[state][s]
 
     else:
-        if len(transitions[state]) > 0:
+        if len(transitions[state]) > 0 and state!=5:
             if re.match("\d", s):
                 state = transitions[state]["digit"]
             elif re.match("[A-Za-z]", s):
