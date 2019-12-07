@@ -211,7 +211,10 @@ class Asmt:
         return val
 
     def eval(self):
-        variables[self.id.child+scope] = self.expr.eval()
+        if self.id.child+scope in variables:
+            variables[self.id.child + scope] = self.expr.eval()
+        elif self.id.child+'_global' in variables:
+            variables[self.id.child + '_global'] = self.expr.eval()
 
 
 class While_loop:
@@ -275,6 +278,8 @@ class Id:
     def eval(self):
         if self.child+scope in variables:
             return variables[self.child+scope]
+        elif self.child+'_global' in variables:
+            return variables[self.child+'_global']
         else:
             return self.child
 
