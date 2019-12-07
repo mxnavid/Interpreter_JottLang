@@ -203,6 +203,11 @@ class Asmt:
     def verify(self):
         if self.id.child+scope in variables:
             return True
+        elif self.type == 'String' and type(self.expr.eval()).__name__ != 'str':
+            print("Syntax Error: " + self.type + " expected but got " + type(self.expr.eval()).__name__)
+            # print("Syntax Error: Type mismatch: Expected " + str(type(left).__name__).upper() + " got " + str(
+            #     type(right).__name__).upper(), end=", ")
+            return False
         else:
             var = self.id.verify()
             val = self.expr.verify()
@@ -685,7 +690,7 @@ class Func():
         scope = "_local"
         func_params[self.f_id.child] = []
         self.p_list.verify(self.f_id.child)
-        func_dict[self.f_id.child] = self.func_stmt
+        func_dict[self.f_id.child] = (self.func_stmt, self.type)
         scope = "_global"
         return True
 
@@ -736,7 +741,7 @@ class F_Call:
             else:
                 variables[var+scope] = self.fc_p_list.expr[index]
             index += 1
-        temp = func_dict[self.f_id.child].eval()
+        temp = func_dict[self.f_id.child][0].eval()
         scope = "_global"
         return temp
 
