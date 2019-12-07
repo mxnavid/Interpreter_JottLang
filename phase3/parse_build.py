@@ -877,9 +877,20 @@ def build_tree(tokens, tree):
                     tree.expr.append(float(tokens[0].value))
                 else:
                     tree.expr.append(int(tokens[0].value))
+            elif tokens[1].value == "-" or tokens[1].value == "+":
+                tree2 = tc.I_expr_triple()
+                tree2.left = tc.Id()
+                tokens = build_tree(tokens, tree2.left)
+                tree2.op = tc.Op()
+                tokens = build_tree(tokens, tree2.op)
+                tree2.right = tc.Int()
+                tokens = build_tree(tokens, tree2.right)
+                tree.expr.append(tokens)
+                return tokens
             else:
                 raw_val = tokens[0].value.replace("\'","")
                 tree.expr.append(raw_val.replace("\"",""))
+
             tokens = tokens[1:]
             if tokens[0].value == ',':
                 tokens = tokens[1:]
