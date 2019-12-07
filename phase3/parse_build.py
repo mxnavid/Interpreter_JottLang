@@ -933,7 +933,7 @@ def accepts(transitions, initial, s):
             else:
                 state = "break_b"
         else:
-            state = "break_a"
+            state = "break_b"
 
     return state
 
@@ -981,17 +981,6 @@ def parser(file_name):
                 state = 0
                 last_state = state
                 state = accepts(dfa, state, char)
-            if state == "break_a":
-                if token_i.value == "Integer" or token_i.value == "Double" or token_i.value == "Void" or token_i.value == "String" \
-                        or token_i.value == "print" or token_i.value == "concat" or token_i.value == "charAt":
-                    token_i.type = token_i.value
-                else:
-                    token_i.type = term_tokens[last_state]
-                token_i.line = [line_num, line]
-                tokens.append(token_i)
-                token_i = tc.Token()
-                token_i.value = ""
-                state = 0
 
     last_state = state
     state = accepts(dfa, state, 'EOF')
